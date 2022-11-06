@@ -19,12 +19,13 @@ namespace database.Controllers
         }
 
         [HttpGet]
-        public ActionResult<ResultDto<List<Student>>> Get()
+        public ActionResult<ResultDto<List<Student>>> Get([FromQuery]StudentDto stu) 
         {
             var role = User.FindFirstValue(ClaimTypes.Role);
             switch (role)
             {
                 case "admin":
+                    Console.WriteLine(stu.PageSize);
                     return Ok(new ResultDto<List<Student>>()
                     {
                         Result = _ctx.Student.ToList(),
@@ -34,7 +35,7 @@ namespace database.Controllers
                     // 管理员只能查看自己管理宿舍里的学生(最多管理一栋宿舍)
                     var id = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                     var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
-                    var stus = _ctx.Student.Where(stu => stu.DormBuildId == dm.DormBuildId);
+                    var stus = _ctx.Student.Where(student => student.DormBuildId == dm.DormBuildId);
                     return Ok(new ResultDto<List<Student>>()
                     {
                         Result = stus.ToList(),

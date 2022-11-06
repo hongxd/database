@@ -35,7 +35,8 @@ namespace database.Controllers
                             Name = p.Name,
                             Sex = p.Sex,
                             Tel = p.Tel,
-                            Username = p.UserName
+                            Username = p.UserName,
+                            Role = "admin"
                         }
                     });
                 }
@@ -52,7 +53,8 @@ namespace database.Controllers
                             Tel = p.Tel,
                             Username = p.UserName,
                             DormBuildName = d.Name,
-                            DormBuildDetail = d.Detail
+                            DormBuildDetail = d.Detail,
+                            Role = "dormmanager"
                         }
                     });
                 }
@@ -69,7 +71,8 @@ namespace database.Controllers
                             Tel = p.Tel,
                             Username = p.StuNum,
                             DormBuildName = d.Name,
-                            DormBuildDetail = d.Detail
+                            DormBuildDetail = d.Detail,
+                            Role = "student"
                         }
                     });
                     }

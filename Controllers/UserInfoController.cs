@@ -23,12 +23,12 @@ namespace database.Controllers
         {
             var id = Guid.Parse((ReadOnlySpan<char>)User.FindFirstValue(ClaimTypes.NameIdentifier));
             var role = User.FindFirstValue(ClaimTypes.Role);
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
             switch (role)
             {
                 case "admin":
                 {
                     var admin = _ctx.Admin.Single(ad => ad.Id == id);
-                    var accessToken = await HttpContext.GetTokenAsync("access_token");
                     return Ok(new ResultDto<UserInfoDto>()
                     {
                         Result = new UserInfoDto()
@@ -39,6 +39,22 @@ namespace database.Controllers
                             Password = admin.Password,
                             Token = accessToken,
                             Roles = new List<Roles> { new() { RoleName = admin.UserName, Value = "admin" } },
+                        }
+                    });
+                }
+                case "dormmanager":
+                {
+                    var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
+                    return Ok(new ResultDto<UserInfoDto>()
+                    {
+                        Result = new UserInfoDto()
+                        {
+                            Id = id,
+                            Username = dm.UserName,
+                            Name = dm.Name,
+                            Password = dm.Password,
+                            Token = accessToken,
+                            Roles = new List<Roles> { new() { RoleName = dm.UserName, Value = "dormmanager" } },
                         }
                     });
                 }

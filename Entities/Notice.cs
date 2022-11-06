@@ -3,9 +3,9 @@
     // 用于存储公告信息
     public class Notice
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public Guid PId { get; set; }
-        public DateTime Date { get; set; }
-        public string Content { get; set; }
+        public Guid Id { get; init; } = Guid.NewGuid();
+        public Guid PId { get; init; }
+        public DateTime? Date { get; set; }
+        public string? Content { get; set; }
     }
 }

@@ -4,10 +4,10 @@
     public class Record
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public string StudentNumber { get; set; }
+        public string? StudentNumber { get; set; }
         public Guid DormBuildId { get; set; }
-        public string DormName { get; set; }
-        public DateTime Date { get; set; }
-        public string Detail { get; set; }
+        public string? DormName { get; set; }
+        public DateTime? Date { get; set; }
+        public string? Detail { get; set; }
     }
 }
