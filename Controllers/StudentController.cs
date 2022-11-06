@@ -27,7 +27,7 @@ namespace database.Controllers
                 case "admin":
                     return Ok(new ResultDto<List<Student>>()
                     {
-                        Data = _ctx.Student.ToList(),
+                        Result = _ctx.Student.ToList(),
                     });
                 case "dormmanager":
                 {
@@ -37,7 +37,7 @@ namespace database.Controllers
                     var stus = _ctx.Student.Where(stu => stu.DormBuildId == dm.DormBuildId);
                     return Ok(new ResultDto<List<Student>>()
                     {
-                        Data = stus.ToList(),
+                        Result = stus.ToList(),
                     });
                 }
                 default:
@@ -53,7 +53,7 @@ namespace database.Controllers
             await _ctx.SaveChangesAsync();
             return Ok(new ResultDto<string>()
             {
-                Data = "添加成功！"
+                Result = "添加成功！"
             });
         }
 
@@ -70,7 +70,7 @@ namespace database.Controllers
                 await _ctx.SaveChangesAsync();
                 return Ok(new ResultDto<string>()
                 {
-                    Data = "删除成功！"
+                    Result = "删除成功！"
                 });
             }
             catch

@@ -22,7 +22,7 @@ namespace database.Controllers
         {
             return Ok(new ResultDto<List<Dormmanager>>()
                 {
-                    Data = _ctx.Dormmanager.ToList()
+                    Result = _ctx.Dormmanager.ToList()
                 }
             );
         }
@@ -34,7 +34,7 @@ namespace database.Controllers
             await _ctx.SaveChangesAsync();
             return Ok(new ResultDto<string>()
             {
-                Data = "添加成功！",
+                Result = "添加成功！",
             });
         }
 
@@ -51,7 +51,7 @@ namespace database.Controllers
                 await _ctx.SaveChangesAsync();
                 return Ok(new ResultDto<string>()
                 {
-                    Data = "删除成功！"
+                    Result = "删除成功！"
                 });
             }
             catch

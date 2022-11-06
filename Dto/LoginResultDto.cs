@@ -3,6 +3,5 @@
     public class LoginResultDto
     {
         public string Token { get; set; }
-        public string Msg { get; set; }
     }
 }

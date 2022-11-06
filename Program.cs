@@ -36,6 +36,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
 
     });
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("cors", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+} );
 
 var app = builder.Build();
 
@@ -43,5 +47,6 @@ app.MapControllers();
 //app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("cors");
 
 app.Run();

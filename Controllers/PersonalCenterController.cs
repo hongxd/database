@@ -30,7 +30,7 @@ namespace database.Controllers
                     var p = _ctx.Admin.Single(admin => admin.Id ==id );
                     return Ok(new ResultDto<PersonDto>()
                     {
-                        Data = new PersonDto()
+                        Result = new PersonDto()
                         {
                             Name = p.Name,
                             Sex = p.Sex,
@@ -45,7 +45,7 @@ namespace database.Controllers
                     var d = _ctx.Dormbuild.Single(d => d.Id == p.DormBuildId);
                     return Ok(new ResultDto<PersonDto>()
                     {
-                        Data = new PersonDto()
+                        Result = new PersonDto()
                         {
                             Name = p.Name,
                             Sex = p.Sex,
@@ -62,7 +62,7 @@ namespace database.Controllers
                     var d = _ctx.Dormbuild.Single(d => d.Id == p.DormBuildId);
                     return Ok(new ResultDto<PersonDto>()
                     {
-                        Data = new PersonDto()
+                        Result = new PersonDto()
                         {
                             Name = p.Name,
                             Sex = p.Sex,
@@ -119,7 +119,7 @@ namespace database.Controllers
             await _ctx.SaveChangesAsync();
             return Ok(new ResultDto<string>()
             {
-                Data = "成功修改个人信息！",
+                Result = "成功修改个人信息！",
             });
         }
     }

@@ -39,7 +39,7 @@ namespace database.Controllers
         }
 
         [HttpPost]
-        public ActionResult<LoginResultDto> Post(UserDto user)
+        public ActionResult<ResultDto<LoginResultDto>> Post(UserDto user)
         {
             switch (user.RoleId)
             {
@@ -72,10 +72,13 @@ namespace database.Controllers
                         role = "dormmanager";
                         name = manager.First().UserName;
                     }
-                    return Ok(new LoginResultDto()
+
+                    return Ok(new ResultDto<LoginResultDto>()
                     {
-                        Msg = "登录成功",
-                        Token = GetToken(id,name,role),
+                        Result = new LoginResultDto()
+                        {
+                            Token = GetToken(id, name, role),
+                        }
                     });
                 }
                 // 学生登录
@@ -85,10 +88,12 @@ namespace database.Controllers
                         .Where(student => student.StuNum == user.Username && student.Password == user.Password)
                         .ToList();
                     if(stu.Count==0) return BadRequest("用户名或密码错误");
-                    return Ok(new LoginResultDto()
+                    return Ok(new ResultDto<LoginResultDto>()
                     {
-                        Msg = "登录成功",
-                        Token = GetToken(stu.First().Id,stu.First().Name, "student")
+                        Result = new LoginResultDto()
+                        {
+                            Token = GetToken(stu.First().Id, stu.First().Name, "student")
+                        }
                     });
                 }
                 default:

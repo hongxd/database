@@ -2,11 +2,6 @@
 {
     public class ResultDto<T>
     {
-        public T Data { get; set; }
-    }
-
-    public class Success
-    {
-        public string Data { get; set; }
+        public T Result { get; set; }
     }
 }

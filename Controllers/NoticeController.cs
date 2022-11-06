@@ -35,7 +35,7 @@ namespace database.Controllers
                 };
             return Ok(new ResultDto<List<NoticeDto>?>()
             {
-                Data = nts.ToList()
+                Result = nts.ToList()
             });
         }
 
@@ -57,7 +57,7 @@ namespace database.Controllers
             };
             await _ctx.Notice.AddAsync(notice);
             await _ctx.SaveChangesAsync();
-            return Ok(new ResultDto<string>() { Data = "添加成功" });
+            return Ok(new ResultDto<string>() { Result = "添加成功" });
         }
 
         [HttpDelete]
@@ -73,7 +73,7 @@ namespace database.Controllers
                 await _ctx.SaveChangesAsync();
                 return Ok(new ResultDto<string>()
                 {
-                    Data = "删除成功",
+                    Result = "删除成功",
                 });
             }
             catch
