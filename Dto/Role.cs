@@ -1,8 +1,7 @@
-﻿namespace database.Dto
+﻿namespace database.Dto;
+
+public enum Role
 {
-    public enum Role
-    {
-        Manager,
-        Student,
-    }
+    Manager,
+    Student,
 }

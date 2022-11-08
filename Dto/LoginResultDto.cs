@@ -1,7 +1,6 @@
-﻿namespace database.Dto
+﻿namespace database.Dto;
+
+public class LoginResultDto
 {
-    public class LoginResultDto
-    {
-        public string Token { get; set; }
-    }
+    public string Token { get; set; }
 }

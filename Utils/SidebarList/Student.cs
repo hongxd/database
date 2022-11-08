@@ -1,18 +1,17 @@
-﻿namespace database.Utils.SidebarList
+﻿namespace database.Utils.SidebarList;
+
+public class Student
 {
-    public class Student
+    public readonly List<Sidebar> SidebarList = new()
     {
-        public readonly List<Sidebar> SidebarList = new()
+        new Sidebar
         {
-            new Sidebar
-            {
-                Meta = new Meta() { Title = "公告" }
-            },
-            new Sidebar
-            {
-                Meta = new Meta() { Title = "查看考勤记录" }
-            },
-            new Sidebar { Meta = new Meta() { Title = "查看打卡记录" } }
-        };
-    }
+            Meta = new Meta { Title = "公告" }
+        },
+        new Sidebar
+        {
+            Meta = new Meta { Title = "查看考勤记录" }
+        },
+        new Sidebar { Meta = new Meta { Title = "查看打卡记录" } }
+    };
 }

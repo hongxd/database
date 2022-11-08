@@ -2,13 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace database.Controllers
+namespace database.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+[Authorize]
+public class ClockRecordController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    [Authorize]
-    public class ClockRecordController : ControllerBase
-    {
-        private readonly ApplicationDbContext _ctx;
-    }
+    private readonly ApplicationDbContext _ctx;
 }

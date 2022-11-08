@@ -1,8 +1,7 @@
-﻿namespace database.Entities
+﻿namespace database.Entities;
+
+public enum Gender
 {
-    public enum Gender
-    {
-        Female,
-        Male
-    }
+    Female,
+    Male
 }

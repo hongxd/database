@@ -5,62 +5,61 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace database.Controllers
+namespace database.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class ClockController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ClockController : ControllerBase
+    private readonly ApplicationDbContext _ctx;
+
+    public ClockController(ApplicationDbContext ctx)
     {
-        private readonly ApplicationDbContext _ctx;
+        _ctx = ctx;
+    }
 
-        public ClockController(ApplicationDbContext ctx)
+    [HttpGet]
+    public ActionResult<ResultDto<List<Punchclock>>> Get()
+    {
+        return Ok(new ResultDto<List<Punchclock>>
         {
-            _ctx = ctx;
-        }
+            Result = _ctx.Punchclock.ToList(),
+        });
+    }
 
-        [HttpGet]
-        public ActionResult<ResultDto<List<Punchclock>>> Get()
+    [HttpPut]
+    [Authorize(Roles = "admin")]
+    public async Task<ActionResult<ResultDto<string>>> Put(Punchclock clock)
+    {
+        clock.PId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        await _ctx.Punchclock.AddAsync(clock);
+        await _ctx.SaveChangesAsync();
+        return Ok(new ResultDto<string>
         {
-            return Ok(new ResultDto<List<Punchclock>>()
+            Result = "添加成功！"
+        });
+    }
+
+    [HttpDelete]
+    [Authorize(Roles = "admin")]
+    public async Task<ActionResult<ResultDto<string>>> Delete(IdsDto requestBody)
+    {
+        try
+        {
+            requestBody.Ids.ForEach(id =>
             {
-                Result = _ctx.Punchclock.ToList(),
+                var punchclock = _ctx.Punchclock.Single(pc => pc.Id == id);
+                _ctx.Punchclock.Remove(punchclock);
             });
-        }
-
-        [HttpPut]
-        [Authorize(Roles = "admin")]
-        public async Task<ActionResult<ResultDto<string>>> Put(Punchclock clock)
-        {
-            clock.PId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            await _ctx.Punchclock.AddAsync(clock);
             await _ctx.SaveChangesAsync();
-            return Ok(new ResultDto<string>()
+            return Ok(new ResultDto<string>
             {
-                Result = "添加成功！"
+                Result = "删除成功",
             });
         }
-
-        [HttpDelete]
-        [Authorize(Roles = "admin")]
-        public async Task<ActionResult<ResultDto<string>>> Delete(IdsDto requestBody)
+        catch
         {
-            try
-            {
-                requestBody.Ids.ForEach(id =>
-                {
-                    var punchclock = _ctx.Punchclock.Single(pc => pc.Id == id);
-                    _ctx.Punchclock.Remove(punchclock);
-                });
-                await _ctx.SaveChangesAsync();
-                return Ok(new ResultDto<string>()
-                {
-                    Result = "删除成功",
-                });
-            }
-            catch
-            {
-                return BadRequest("无法删除不存在的记录！");
-            }
+            return BadRequest("无法删除不存在的记录！");
         }
     }
 }

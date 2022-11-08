@@ -1,7 +1,6 @@
-﻿namespace database.Dto
+﻿namespace database.Dto;
+
+public class IdsDto
 {
-    public class IdsDto
-    {
-        public List<Guid> Ids { get; set; }
-    }
+    public List<Guid> Ids { get; set; }
 }

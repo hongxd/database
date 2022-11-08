@@ -1,7 +1,6 @@
-﻿namespace database.Dto
+﻿namespace database.Dto;
+
+public class ResultDto<T>
 {
-    public class ResultDto<T>
-    {
-        public T Result { get; set; }
-    }
+    public T Result { get; set; }
 }

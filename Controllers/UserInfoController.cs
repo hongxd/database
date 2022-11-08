@@ -4,34 +4,34 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace database.Controllers
+namespace database.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+[Authorize]
+public class UserInfoController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    [Authorize]
-    public class UserInfoController : ControllerBase
+    private readonly ApplicationDbContext _ctx;
+
+    public UserInfoController(ApplicationDbContext ctx)
     {
-        private readonly ApplicationDbContext _ctx;
+        _ctx = ctx;
+    }
 
-        public UserInfoController(ApplicationDbContext ctx)
+    [HttpGet]
+    public async Task<ActionResult<ResultDto<UserInfoDto>>> Get()
+    {
+        var id = Guid.Parse((ReadOnlySpan<char>)User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var role = User.FindFirstValue(ClaimTypes.Role);
+        var accessToken = await HttpContext.GetTokenAsync("access_token");
+        switch (role)
         {
-            _ctx = ctx;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<ResultDto<UserInfoDto>>> Get()
-        {
-            var id = Guid.Parse((ReadOnlySpan<char>)User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var role = User.FindFirstValue(ClaimTypes.Role);
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            switch (role)
-            {
-                case "admin":
+            case "admin":
                 {
                     var admin = _ctx.Admin.Single(ad => ad.Id == id);
-                    return Ok(new ResultDto<UserInfoDto>()
+                    return Ok(new ResultDto<UserInfoDto>
                     {
-                        Result = new UserInfoDto()
+                        Result = new UserInfoDto
                         {
                             Id = id,
                             Username = admin.UserName,
@@ -42,12 +42,12 @@ namespace database.Controllers
                         }
                     });
                 }
-                case "dormmanager":
+            case "dormmanager":
                 {
                     var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
-                    return Ok(new ResultDto<UserInfoDto>()
+                    return Ok(new ResultDto<UserInfoDto>
                     {
-                        Result = new UserInfoDto()
+                        Result = new UserInfoDto
                         {
                             Id = id,
                             Username = dm.UserName,
@@ -58,9 +58,8 @@ namespace database.Controllers
                         }
                     });
                 }
-            }
-
-            return BadRequest("错误请求");
         }
+
+        return BadRequest("错误请求");
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace database.Dto
+﻿namespace database.Dto;
+
+public class DistributeManagerDto
 {
-    public class DistributeManagerDto
-    {
-        public Guid DormbuildId { get; set; }
-        public Guid ManagerId { get; set; }
-    }
+    public Guid DormbuildId { get; set; }
+    public Guid ManagerId { get; set; }
 }

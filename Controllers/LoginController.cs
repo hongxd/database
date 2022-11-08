@@ -7,52 +7,52 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace database.Controllers
+namespace database.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class LoginController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class LoginController : ControllerBase
+    private readonly ApplicationDbContext _context;
+    private readonly IOptionsSnapshot<JwtHelper> _jwt;
+
+    public LoginController(ApplicationDbContext ctx, IOptionsSnapshot<JwtHelper> jwt)
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IOptionsSnapshot<JwtHelper> _jwt;
+        _context = ctx;
+        _jwt = jwt;
+    }
 
-        public LoginController(ApplicationDbContext ctx, IOptionsSnapshot<JwtHelper> jwt)
-        {
-            _context = ctx;
-            _jwt = jwt;
-        }
+    private string GetToken(Guid id, string name, string role)
+    {
+        var claims = new List<Claim>
+        { new Claim(ClaimTypes.NameIdentifier, id.ToString()),
+            new Claim(ClaimTypes.Name,name),
+            new Claim(ClaimTypes.Role, role) };
+        var key = _jwt.Value.SecKey;
+        var expires = DateTime.Now.AddSeconds(_jwt.Value.ExpireSeconds);
+        var secBytes = Encoding.UTF8.GetBytes(key);
+        var secKey = new SymmetricSecurityKey(secBytes);
+        var credentials = new SigningCredentials(secKey, SecurityAlgorithms.HmacSha256Signature);
+        var tokenDescriptor = new JwtSecurityToken(claims: claims, expires: expires,
+            signingCredentials: credentials);
+        return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+    }
 
-        private string GetToken(Guid id, string name, string role)
+    [HttpPost]
+    public ActionResult<ResultDto<LoginResultDto>> Post(UserDto user)
+    {
+        switch (user.RoleId)
         {
-            var claims = new List<Claim>
-                { new Claim(ClaimTypes.NameIdentifier, id.ToString()),
-                    new Claim(ClaimTypes.Name,name),
-                    new Claim(ClaimTypes.Role, role) };
-            var key = _jwt.Value.SecKey;
-            var expires = DateTime.Now.AddSeconds(_jwt.Value.ExpireSeconds);
-            var secBytes = Encoding.UTF8.GetBytes(key);
-            var secKey = new SymmetricSecurityKey(secBytes);
-            var credentials = new SigningCredentials(secKey, SecurityAlgorithms.HmacSha256Signature);
-            var tokenDescriptor = new JwtSecurityToken(claims: claims, expires: expires,
-                signingCredentials: credentials);
-            return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
-        }
-
-        [HttpPost]
-        public ActionResult<ResultDto<LoginResultDto>> Post(UserDto user)
-        {
-            switch (user.RoleId)
-            {
-                // 管理员登录
-                case Role.Manager:
+            // 管理员登录
+            case Role.Manager:
                 {
                     var adm = _context.Admin
-                        .Where(admin => admin.UserName==user.Username&&admin.Password==user.Password)
+                        .Where(admin => admin.UserName == user.Username && admin.Password == user.Password)
                         .ToList();
                     var manager = _context.Dormmanager
-                        .Where(dm => dm.UserName == user.Username&&dm.Password==user.Password)
+                        .Where(dm => dm.UserName == user.Username && dm.Password == user.Password)
                         .ToList();
-                    if (adm.Count == 0 && manager.Count ==0)
+                    if (adm.Count == 0 && manager.Count == 0)
                     {
                         return BadRequest("用户名或密码错误");
                     }
@@ -73,33 +73,31 @@ namespace database.Controllers
                         name = manager.First().UserName;
                     }
 
-                    return Ok(new ResultDto<LoginResultDto>()
+                    return Ok(new ResultDto<LoginResultDto>
                     {
-                        Result = new LoginResultDto()
+                        Result = new LoginResultDto
                         {
                             Token = GetToken(id, name, role),
                         }
                     });
                 }
-                // 学生登录
-                case Role.Student:
+            // 学生登录
+            case Role.Student:
                 {
                     var stu = _context.Student
                         .Where(student => student.StuNum == user.Username && student.Password == user.Password)
                         .ToList();
-                    if(stu.Count==0) return BadRequest("用户名或密码错误");
-                    return Ok(new ResultDto<LoginResultDto>()
+                    if (stu.Count == 0) return BadRequest("用户名或密码错误");
+                    return Ok(new ResultDto<LoginResultDto>
                     {
-                        Result = new LoginResultDto()
+                        Result = new LoginResultDto
                         {
                             Token = GetToken(stu.First().Id, stu.First().Name, "student")
                         }
                     });
                 }
-                default:
-                    return BadRequest("不存在此角色");
-            }
+            default:
+                return BadRequest("不存在此角色");
         }
     }
-
 }

@@ -1,7 +1,6 @@
-﻿namespace database.Dto
+﻿namespace database.Dto;
+
+public class ContentDto
 {
-    public class ContentDto
-    {
-        public string Content { get; set; }
-    }
+    public string Content { get; set; }
 }
