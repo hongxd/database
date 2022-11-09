@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace database.Entities;
 
-public class PunchclockConfig: IEntityTypeConfiguration<Punchclock>
+public class PunchclockConfig : IEntityTypeConfiguration<Punchclock>
 {
     public void Configure(EntityTypeBuilder<Punchclock> builder)
     {
-        builder.ToTable("punchclock").HasComment("用于存储打卡发布记录"); // 配置表的名称
+        builder.ToTable("punchclock", opt => opt.HasComment("用于存储打卡发布记录")); // 配置表的名称
         // 配置表字段的属性
         builder.Property(punchclock => punchclock.Id).HasColumnName("id").HasComment("打卡Id，唯一");
         builder.Property(punchclock => punchclock.Topic).HasColumnName("topic").HasMaxLength(50).HasComment("打卡主题");

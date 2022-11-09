@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace database.Entities;
 
-public class DormmanagerConfig: IEntityTypeConfiguration<Dormmanager>
+public class DormmanagerConfig : IEntityTypeConfiguration<Dormmanager>
 {
     public void Configure(EntityTypeBuilder<Dormmanager> builder)
     {
-        builder.ToTable("dormmanager").HasComment("主要存储宿舍管理员信息"); // 配置表的名称
+        builder.ToTable("dormmanager", opt => opt.HasComment("主要存储宿舍管理员信息")); // 配置表的名称
         // 配置表字段的属性
         builder.Property(dormmanager => dormmanager.Id).HasColumnName("id").HasComment("宿舍管理员Id，唯一");
         builder.Property(dormmanager => dormmanager.UserName).HasColumnName("userName").HasMaxLength(20).HasComment("用户名，用于登录系统");

@@ -38,7 +38,7 @@ public class StudentController : ControllerBase
                     var stus = _ctx.Student.Where(student => student.DormBuildId == dm.DormBuildId);
                     return Ok(new ResultDto<List<Student>>
                     {
-                        Result = stus.ToList(),
+                        Result = stus.ToList()
                     });
                 }
             default:

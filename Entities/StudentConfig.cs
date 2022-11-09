@@ -7,7 +7,7 @@ public class StudentConfig : IEntityTypeConfiguration<Student>
 {
     public void Configure(EntityTypeBuilder<Student> builder)
     {
-        builder.ToTable("student").HasComment("学生表，用于存放学生信息"); // 配置表的名称
+        builder.ToTable("student", opt => opt.HasComment("学生表，用于存放学生信息")); // 配置表的名称
         // 配置表字段的属性
         builder.Property(student => student.Id).HasColumnName("id").HasComment("学生Id，唯一");
         builder.Property(student => student.StuNum).HasColumnName("stuNum").HasMaxLength(10).IsFixedLength().HasComment("学生学号");

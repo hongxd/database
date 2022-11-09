@@ -1,23 +1,22 @@
+Ôªøusing System.Text;
 using database;
 using database.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// “¿¿µ◊¢»Î
+// ‰æùËµñÊ≥®ÂÖ•
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddMemoryCache(); //  π”√ª∫¥Ê
+builder.Services.AddMemoryCache(); // ‰ΩøÁî®ÁºìÂ≠ò
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString(@"sqlServer"));
 });
 builder.Services.AddDataProtection();
-builder.WebHost.UseUrls("http://localhost:8868"); // ≈‰÷√url
 builder.Services.Configure<JwtHelper>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
@@ -39,7 +38,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("cors", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-} );
+});
+
+builder.WebHost.UseUrls("http://localhost:8868"); // ÈÖçÁΩÆurl
 
 var app = builder.Build();
 
