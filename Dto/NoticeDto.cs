@@ -2,7 +2,7 @@
 
 namespace database.Dto;
 
-public class NoticeDto:Notice
+public class NoticeDto : Notice
 {
     public string NoticePerson { get; set; }
 }

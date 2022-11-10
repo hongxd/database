@@ -1,8 +1,8 @@
-﻿using database.Dto;
+﻿using System.Security.Claims;
+using database.Dto;
 using database.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace database.Controllers;
 

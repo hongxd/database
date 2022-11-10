@@ -3,7 +3,6 @@ using database.Dto;
 using database.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace database.Controllers;
 

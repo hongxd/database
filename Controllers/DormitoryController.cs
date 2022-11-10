@@ -1,6 +1,4 @@
-﻿using database.Dto;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace database.Controllers;
 
@@ -18,6 +16,6 @@ public class DormitoryController : ControllerBase
     //[HttpGet]
     //public ActionResult<ResultDto<string>> Get()
     //{
-            
+
     //}
 }

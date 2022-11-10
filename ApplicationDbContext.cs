@@ -13,7 +13,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Punchclockrecord> Punchclockrecord { get; set; }
     public DbSet<Record> Record { get; set; }
     public DbSet<Student> Student { get; set; }
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
