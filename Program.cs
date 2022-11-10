@@ -23,6 +23,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         var jwt = builder.Configuration.GetSection("Jwt")
             .Get<JwtHelper>();
+        if (jwt == null) throw new Exception("没有在appsetting中配置jwt字段");
         var keyBytes = Encoding.UTF8.GetBytes(jwt.SecKey);
         var secKey = new SymmetricSecurityKey(keyBytes);
         opt.TokenValidationParameters = new TokenValidationParameters
@@ -40,7 +41,9 @@ builder.Services.AddCors(opt =>
     opt.AddPolicy("cors", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 
-builder.WebHost.UseUrls("http://localhost:8868"); // 配置url
+// 配置url端口为8868，没配置默认5000
+var HostUrl = builder.Configuration.GetValue<string>("HostUrl") ?? "";
+builder.WebHost.UseUrls(HostUrl);
 
 var app = builder.Build();
 
