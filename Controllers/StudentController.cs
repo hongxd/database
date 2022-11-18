@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using database.Dto;
 using database.Entities;
+using database.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,37 +25,45 @@ public class StudentController : ControllerBase
         var role = User.FindFirstValue(ClaimTypes.Role);
         switch (role)
         {
-            case "admin":
-                Console.WriteLine(stu.PageSize);
+            case GlobalRole.Admin:
                 return Ok(new ResultDto<List<Student>>
                 {
-                    Result = _ctx.Student.ToList(),
+                    Result = _ctx.Student.ToList()
                 });
-            case "dormmanager":
+            case GlobalRole.DormManager:
+            {
+                // 管理员只能查看自己管理宿舍里的学生(最多管理一栋宿舍)
+                var id = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
+                var stus = _ctx.Student.Where(student => student.DormBuildId == dm.DormBuildId);
+                return Ok(new ResultDto<List<Student>>
                 {
-                    // 管理员只能查看自己管理宿舍里的学生(最多管理一栋宿舍)
-                    var id = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
-                    var stus = _ctx.Student.Where(student => student.DormBuildId == dm.DormBuildId);
-                    return Ok(new ResultDto<List<Student>>
-                    {
-                        Result = stus.ToList()
-                    });
-                }
+                    Result = stus.ToList()
+                });
+            }
             default:
                 return Unauthorized("没有权限访问");
         }
     }
 
     [HttpPut]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = GlobalRole.Admin)]
     public async Task<ActionResult<ResultDto<string>>> Put(Student stu)
     {
+        var id = stu.DormBuildId;
+        var sno = stu.StuNum;
+        var student = _ctx.Student.Where(s => s.StuNum == sno);
+        if (student.Any()) return BadRequest("已存在相同学号学生！");
+        var dorm = _ctx.Dormbuild.Where(db => db.Id == id);
+        if (!dorm.Any())
+            return BadRequest("不存在此宿舍！");
+        stu.DormName = dorm.First().Name;
+        stu.Password = "aa123+";
         await _ctx.Student.AddAsync(stu);
         await _ctx.SaveChangesAsync();
         return Ok(new ResultDto<string>
         {
-            Result = "添加成功！"
+            Result = "添加成功！默认密码为aa123+"
         });
     }
 

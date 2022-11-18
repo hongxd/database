@@ -1,10 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
 using database.Dto;
 using database.Utils;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -54,7 +52,7 @@ public class LoginController : ControllerBase
                     var manager = _context.Dormmanager
                         .Where(dm => dm.UserName == user.Username && dm.Password == user.Password)
                         .ToList();
-                    if (adm.Count == 0 && manager.Count == 0)
+                    if (!adm.Any() && !manager.Any())
                     {
                         return BadRequest("用户名或密码错误");
                     }
@@ -62,7 +60,7 @@ public class LoginController : ControllerBase
                     Guid id;
                     string role;
                     string name;
-                    if (adm.Count != 0)
+                    if (adm.Any())
                     {
                         id = adm.First().Id;
                         role = "admin";
