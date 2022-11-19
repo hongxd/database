@@ -56,7 +56,7 @@ public class LoginController : ControllerBase
                     .ToList();
                 if (!adm.Any() && !manager.Any()) return BadRequest("用户名或密码错误");
 
-                Guid id;
+                Guid? id;
                 string role;
                 string? name;
                 if (adm.Any())

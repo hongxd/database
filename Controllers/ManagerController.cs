@@ -1,5 +1,6 @@
 ﻿using database.Dto;
 using database.Entities;
+using database.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +8,7 @@ namespace database.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+[Authorize(Roles = GlobalRole.Admin)]
 public class ManagerController : ControllerBase
 {
     private readonly ApplicationDbContext _ctx;
@@ -18,11 +19,16 @@ public class ManagerController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<ResultDto<List<Dormmanager>>> Get()
+    public ActionResult<QueryResultDto<Dormmanager>> Get()
     {
-        return Ok(new ResultDto<List<Dormmanager>>
+        var manager = _ctx.Dormmanager.ToArray();
+        return Ok(new QueryResultDto<Dormmanager>
         {
-            Result = _ctx.Dormmanager.ToList()
+            Result = new QueryDto<Dormmanager>
+            {
+                List = manager,
+                Total = manager.Length
+            }
         }
         );
     }

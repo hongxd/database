@@ -1,4 +1,4 @@
-﻿using database.Entities;
+﻿using database.Utils;
 
 namespace database.Dto;
 

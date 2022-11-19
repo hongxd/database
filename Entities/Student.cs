@@ -1,4 +1,6 @@
-﻿namespace database.Entities;
+﻿using database.Utils;
+
+namespace database.Entities;
 
 public class Student
 {

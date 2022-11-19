@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using database.Dto;
 using database.Entities;
+using database.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +28,7 @@ public class ClockController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = GlobalRole.Admin)]
     public async Task<ActionResult<ResultDto<string>>> Put(Punchclock clock)
     {
         clock.PId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -40,7 +41,7 @@ public class ClockController : ControllerBase
     }
 
     [HttpDelete]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = GlobalRole.Admin)]
     public async Task<ActionResult<ResultDto<string>>> Delete(IdsDto requestBody)
     {
         try

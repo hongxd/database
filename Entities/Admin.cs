@@ -1,4 +1,6 @@
-﻿namespace database.Entities;
+﻿using database.Utils;
+
+namespace database.Entities;
 
 // 管理员表
 public class Admin
