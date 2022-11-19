@@ -10,6 +10,8 @@ public class Dormmanager
     protected internal string? Password { get; set; }
     public Guid? DormBuildId { get; set; }
     public string? DormBuildDetail { get; set; }
+    public string? DormBuildName { get; set; }
+
     public string? Name { get; set; }
     public Gender? Sex { get; set; }
     public string? Tel { get; set; }

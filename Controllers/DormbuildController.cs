@@ -18,8 +18,9 @@ public class DormbuildController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<ResultDto<List<Dormbuild>>> Get()
+    public ActionResult<ResultDto<List<Dormbuild>>> Get([FromQuery] DormbuildDto? dorm)
     {
+        // var whereExp = Query.ConfigQuery(dorm);
         return Ok(new ResultDto<List<Dormbuild>>
         {
             Result = _ctx.Dormbuild.ToList()
@@ -29,6 +30,7 @@ public class DormbuildController : ControllerBase
     [HttpPut]
     public async Task<ActionResult<ResultDto<string>>> Put(Dormbuild build)
     {
+        // 给宿舍分配管理员而不是给管理员分配宿舍
         await _ctx.Dormbuild.AddAsync(build);
         await _ctx.SaveChangesAsync();
         return Ok(new ResultDto<string>
@@ -49,15 +51,13 @@ public class DormbuildController : ControllerBase
             await _ctx.SaveChangesAsync();
             return Ok(new ResultDto<string>
             {
-                Result = "成功修改" + dm.Name + "管理的宿舍楼",
+                Result = "成功修改" + dm.Name + "管理的宿舍楼"
             });
         }
         catch
         {
             return BadRequest("不存在此宿舍楼");
         }
-
-
     }
 
     [HttpDelete]

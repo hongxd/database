@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using database;
 
@@ -11,9 +12,11 @@ using database;
 namespace database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221119075508_增加宿舍管理员表字段：宿舍名字")]
+    partial class 增加宿舍管理员表字段宿舍名字
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,7 +73,7 @@ namespace database.Migrations
 
             modelBuilder.Entity("database.Entities.Dormbuild", b =>
                 {
-                    b.Property<Guid?>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id")
@@ -83,7 +86,6 @@ namespace database.Migrations
                         .HasComment("详细说明");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)")
                         .HasColumnName("name")
