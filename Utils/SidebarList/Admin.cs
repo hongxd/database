@@ -52,6 +52,13 @@ public class Admin
         },
         new Sidebar
         {
+            Path = "/dormManager",
+            Name = "DormManager",
+            Component = "/dormManager/index",
+            Meta = new Meta { Title = "宿舍管理员管理" }
+        },
+        new Sidebar
+        {
             Path = "/student",
             Name = "Student",
             Component = "/student/index",

@@ -22,12 +22,14 @@ public class LoginController : ControllerBase
         _jwt = jwt;
     }
 
-    private string GetToken(Guid id, string name, string role)
+    private string GetToken(Guid? id, string? name, string role)
     {
         var claims = new List<Claim>
-        { new Claim(ClaimTypes.NameIdentifier, id.ToString()),
-            new Claim(ClaimTypes.Name,name),
-            new Claim(ClaimTypes.Role, role) };
+        {
+            new(ClaimTypes.NameIdentifier, id.ToString()),
+            new(ClaimTypes.Name, name),
+            new(ClaimTypes.Role, role)
+        };
         var key = _jwt.Value.SecKey;
         var expires = DateTime.Now.AddSeconds(_jwt.Value.ExpireSeconds);
         var secBytes = Encoding.UTF8.GetBytes(key);
@@ -45,57 +47,54 @@ public class LoginController : ControllerBase
         {
             // 管理员登录
             case Role.Manager:
+            {
+                var adm = _context.Admin
+                    .Where(admin => admin.UserName == user.Username && admin.Password == user.Password)
+                    .ToList();
+                var manager = _context.Dormmanager
+                    .Where(dm => dm.UserName == user.Username && dm.Password == user.Password)
+                    .ToList();
+                if (!adm.Any() && !manager.Any()) return BadRequest("用户名或密码错误");
+
+                Guid id;
+                string role;
+                string? name;
+                if (adm.Any())
                 {
-                    var adm = _context.Admin
-                        .Where(admin => admin.UserName == user.Username && admin.Password == user.Password)
-                        .ToList();
-                    var manager = _context.Dormmanager
-                        .Where(dm => dm.UserName == user.Username && dm.Password == user.Password)
-                        .ToList();
-                    if (!adm.Any() && !manager.Any())
-                    {
-                        return BadRequest("用户名或密码错误");
-                    }
-
-                    Guid id;
-                    string role;
-                    string name;
-                    if (adm.Any())
-                    {
-                        id = adm.First().Id;
-                        role = "admin";
-                        name = adm.First().UserName;
-                    }
-                    else
-                    {
-                        id = manager.First().Id;
-                        role = "dormmanager";
-                        name = manager.First().UserName;
-                    }
-
-                    return Ok(new ResultDto<LoginResultDto>
-                    {
-                        Result = new LoginResultDto
-                        {
-                            Token = GetToken(id, name, role),
-                        }
-                    });
+                    id = adm.First().Id;
+                    role = "admin";
+                    name = adm.First().UserName;
                 }
+                else
+                {
+                    id = manager.First().Id;
+                    role = "dormmanager";
+                    name = manager.First().UserName;
+                }
+
+                return Ok(new ResultDto<LoginResultDto>
+                {
+                    Result = new LoginResultDto
+                    {
+                        Token = GetToken(id, name, role)
+                    }
+                });
+            }
             // 学生登录
             case Role.Student:
+            {
+                var stu = _context.Student
+                    .Where(student => student.StuNum == user.Username && student.Password == user.Password)
+                    .ToList();
+                if (stu.Count == 0) return BadRequest("用户名或密码错误");
+                return Ok(new ResultDto<LoginResultDto>
                 {
-                    var stu = _context.Student
-                        .Where(student => student.StuNum == user.Username && student.Password == user.Password)
-                        .ToList();
-                    if (stu.Count == 0) return BadRequest("用户名或密码错误");
-                    return Ok(new ResultDto<LoginResultDto>
+                    Result = new LoginResultDto
                     {
-                        Result = new LoginResultDto
-                        {
-                            Token = GetToken(stu.First().Id, stu.First().Name, "student")
-                        }
-                    });
-                }
+                        Token = GetToken(stu.First().Id, stu.First().Name, "student")
+                    }
+                });
+            }
             default:
                 return BadRequest("不存在此角色");
         }
