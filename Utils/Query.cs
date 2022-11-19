@@ -5,6 +5,8 @@ namespace database.Utils;
 
 public static class Query
 {
+    public static string[] defaultExcludeFields = { "Page", "PageSize" };
+
     /// <summary>
     ///     配置分页
     /// </summary>
@@ -22,18 +24,18 @@ public static class Query
     public static string ConfigQuery<T>(T query) where T : class
     {
         StringBuilder whereExp = new();
-        var dict = GenerateParametersDictionary(query, new[] { "Page", "PageSize" });
+        var dict = GenerateParametersDictionary(query);
         foreach (var (key, value) in dict) whereExp.Append($@"{key} like '%{value}%' and ");
 
         if (whereExp.Length != 0) whereExp.Insert(0, @" where ").Remove(whereExp.Length - 4, 3);
         return whereExp.ToString();
     }
 
-
-    private static Dictionary<string, string> GenerateParametersDictionary<T>(T dto, string[]? excludeFields)
+    public static Dictionary<string, string> GenerateParametersDictionary<T>(T dto, string[]? excludeFields = null)
     {
         var properties = typeof(T).GetProperties();
         var parameters = new Dictionary<string, string>();
+        excludeFields ??= defaultExcludeFields;
 
         foreach (var property in properties)
         {
@@ -44,7 +46,7 @@ public static class Query
             if ((string)propertyValue == property.Name) continue;
             if (parameters.ContainsKey(property.Name)) continue;
 
-            parameters.Add(property.Name, propertyValue.ToString());
+            parameters.Add(property.Name, (string)propertyValue?.ToString());
         }
 
         return parameters;

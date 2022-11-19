@@ -59,6 +59,13 @@ public class Admin
         },
         new Sidebar
         {
+            Path = "/dormBuild",
+            Name = "DormBuild",
+            Component = "/dormBuild/index",
+            Meta = new Meta { Title = "宿舍楼管理" }
+        },
+        new Sidebar
+        {
             Path = "/student",
             Name = "Student",
             Component = "/student/index",
@@ -70,11 +77,10 @@ public class Admin
             Name = "PersonalCenter",
             Component = "/personalCenter/index",
             Meta = new Meta { Title = "个人中心" }
-        },
+        }
         //new() { Name = "Dashboard", Meta = new Meta() { Title = "宿舍管理员管理" } },
         //new() { Meta = new Meta() { Title = "学生管理" } },
         //new() { Meta = new Meta() { Title = "宿舍楼管理" } },
         //new() { Meta = new Meta() { Title = "考勤打卡管理" } },
     };
-
 }

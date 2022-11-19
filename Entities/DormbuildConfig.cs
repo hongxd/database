@@ -13,6 +13,9 @@ public class DormbuildConfig : IEntityTypeConfiguration<Dormbuild>
         builder.Property(dormbuild => dormbuild.Id).HasColumnName("id").HasComment("宿舍楼Id，唯一").IsRequired();
         builder.Property(dormbuild => dormbuild.Name).HasColumnName("name").HasMaxLength(10).HasComment("宿舍楼名称")
             .IsRequired();
-        builder.Property(dormbuild => dormbuild.Detail).HasColumnName("detail").HasMaxLength(100).HasComment("详细说明");
+        builder.Property(dormbuild => dormbuild.Detail).HasColumnName("detail").HasMaxLength(100).HasComment("详细说明")
+            .IsRequired(false);
+        builder.Property(dormbuild => dormbuild.Dormmanager).HasColumnName("dormmanager").HasComment("管理员id")
+            .IsRequired(false);
     }
 }

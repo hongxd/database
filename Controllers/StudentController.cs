@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using database.Dto;
-using database.Entities;
 using database.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,19 +20,31 @@ public class StudentController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<QueryResultDto<Student[]>> Get([FromQuery] StudentDto stu)
+    public ActionResult<QueryResultDto<StudentResDto>> Get([FromQuery] StudentDto stu)
     {
         var role = User.FindFirstValue(ClaimTypes.Role);
         var whereExp = Query.ConfigQuery(stu);
-        var data = _ctx.Student.FromSqlRaw(@$"select * from student {whereExp}");
+        var data = from s in _ctx.Student.FromSqlRaw(@$"select * from student {whereExp}")
+            join db in _ctx.Dormbuild on s.DormBuildId equals db.Id into gj
+            from subDb in gj.DefaultIfEmpty()
+            select new StudentResDto
+            {
+                Id = s.Id,
+                Name = s.Name,
+                Sex = s.Sex,
+                Tel = s.Tel,
+                DormBuildId = s.DormBuildId,
+                StuNum = s.StuNum,
+                DormName = subDb.Name
+            };
 
         switch (role)
         {
             case GlobalRole.Admin:
                 var list = Query.ConfigPaging(data, stu).ToArray();
-                return Ok(new QueryResultDto<Student>
+                return Ok(new QueryResultDto<StudentResDto>
                 {
-                    Result = new QueryDto<Student>
+                    Result = new QueryDto<StudentResDto>
                     {
                         List = list,
                         Total = data.Count()
@@ -45,9 +56,9 @@ public class StudentController : ControllerBase
                 var id = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
                 var stus = data.Where(student => student.DormBuildId == dm.DormBuildId);
-                return Ok(new QueryResultDto<Student>
+                return Ok(new QueryResultDto<StudentResDto>
                 {
-                    Result = new QueryDto<Student>
+                    Result = new QueryDto<StudentResDto>
                     {
                         List = Query.ConfigPaging(stus, stu).ToArray(),
                         Total = stus.Count()
@@ -77,7 +88,6 @@ public class StudentController : ControllerBase
             var dorm = _ctx.Dormbuild.Where(db => db.Id == id);
             if (!dorm.Any())
                 return BadRequest("不存在此宿舍！");
-            stu.DormName = dorm.First().Name;
             await _ctx.Student.AddAsync(stu);
         }
         else
@@ -86,7 +96,6 @@ public class StudentController : ControllerBase
             if (!dorm.Any())
                 return BadRequest("不存在此宿舍！");
             var student = _ctx.Student.Single(s => s.Id == stu.Id);
-            student.DormName = dorm.First().Name;
             student.Name = stu.Name;
             student.Sex = stu.Sex;
             student.StuNum = stu.StuNum;

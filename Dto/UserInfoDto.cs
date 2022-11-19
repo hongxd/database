@@ -5,7 +5,7 @@ public class UserInfoDto
     public Guid Id { get; set; }
     public string Username { get; set; }
     public string Name { get; set; }
-    public string Avatar { get; set; } = "https://q1.qlogo.cn/g?b=qq&nk=190848757&s=640";
+    public string Avatar { get; set; } = Dto.Avatar.Base64;
     public string Desc { get; set; } = "manager";
     public string Password { get; set; }
     public string? Token { get; set; }

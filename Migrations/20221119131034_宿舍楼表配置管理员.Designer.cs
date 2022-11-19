@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using database;
 
@@ -11,9 +12,11 @@ using database;
 namespace database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221119131034_宿舍楼表配置管理员")]
+    partial class 宿舍楼表配置管理员
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,7 +88,13 @@ namespace database.Migrations
                     b.Property<Guid?>("Dormmanager")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("dormmanager")
-                        .HasComment("管理员id");
+                        .HasComment("管理员");
+
+                    b.Property<string>("ManagerName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("managerName")
+                        .HasComment("管理员名称");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -375,6 +384,13 @@ namespace database.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("dormBuildId")
                         .HasComment("宿舍楼Id");
+
+                    b.Property<string>("DormName")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("dormName")
+                        .HasComment("宿舍楼名称");
 
                     b.Property<string>("Name")
                         .IsRequired()

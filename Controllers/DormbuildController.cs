@@ -1,5 +1,6 @@
 ﻿using database.Dto;
 using database.Entities;
+using database.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +8,7 @@ namespace database.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+[Authorize(Roles = GlobalRole.Admin)]
 public class DormbuildController : ControllerBase
 {
     private readonly ApplicationDbContext _ctx;
@@ -18,67 +19,82 @@ public class DormbuildController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<ResultDto<List<Dormbuild>>> Get([FromQuery] DormbuildDto? dorm)
+    public ActionResult<QueryResultDto<DormbuildDto>> Get([FromQuery] DormbuildDto dorm)
     {
-        // var whereExp = Query.ConfigQuery(dorm);
-        return Ok(new ResultDto<List<Dormbuild>>
+        var data = from db in _ctx.Dormbuild
+            join dm in _ctx.Dormmanager on db.Dormmanager equals dm.Id into gj
+            from subDm in gj.DefaultIfEmpty()
+            select new DormbuildDto
+            {
+                Detail = db.Detail,
+                Dormmanager = db.Dormmanager,
+                Id = db.Id,
+                Name = db.Name,
+                ManagerName = subDm.Name
+            };
+        var list = Query.ConfigPaging(data, dorm).ToArray();
+        return Ok(new QueryResultDto<DormbuildDto>
         {
-            Result = _ctx.Dormbuild.ToList()
+            Result = new QueryDto<DormbuildDto>
+            {
+                List = list,
+                Total = data.Count()
+            }
         });
     }
 
     [HttpPut]
     public async Task<ActionResult<ResultDto<string>>> Put(Dormbuild build)
     {
+        Guid? dormmanager = null;
+        if (build.Dormmanager != null)
+        {
+            // 传的管理员id不在数据库里
+            var manager = _ctx.Dormmanager.Where(dm => dm.Id == build.Dormmanager);
+            if (!manager.Any()) return BadRequest("没有此管理员");
+            dormmanager = manager.First().Id;
+        }
+
+        var result = "修改成功！";
         // 给宿舍分配管理员而不是给管理员分配宿舍
-        await _ctx.Dormbuild.AddAsync(build);
+        if (build.Id != null)
+        {
+            // 传的宿舍楼id不在数据库里
+            var db = _ctx.Dormbuild.Where(d => d.Id == build.Id);
+            if (_ctx.Dormbuild.Any(d => d.Name == build.Name)) return BadRequest("已有相同名字的宿舍，请更换一个名字");
+            if (!db.Any()) return BadRequest("错误请求");
+
+            var d = db.First();
+            d.Name = build.Name;
+            d.Detail = build.Detail;
+            if (dormmanager != null) d.Dormmanager = dormmanager;
+        }
+        else
+        {
+            result = "添加成功！";
+            await _ctx.Dormbuild.AddAsync(build);
+        }
+
         await _ctx.SaveChangesAsync();
         return Ok(new ResultDto<string>
         {
-            Result = "添加成功！"
+            Result = result
         });
-    }
-
-    [HttpPost]
-    [Authorize(Roles = "admin")]
-    // 给宿舍楼分配管理员
-    public async Task<ActionResult<ResultDto<string>>> Post(DistributeManagerDto info)
-    {
-        try
-        {
-            var dm = _ctx.Dormmanager.Single(dm => dm.Id == info.DormbuildId);
-            dm.DormBuildId = info.DormbuildId;
-            await _ctx.SaveChangesAsync();
-            return Ok(new ResultDto<string>
-            {
-                Result = "成功修改" + dm.Name + "管理的宿舍楼"
-            });
-        }
-        catch
-        {
-            return BadRequest("不存在此宿舍楼");
-        }
     }
 
     [HttpDelete]
     public async Task<ActionResult<ResultDto<string>>> Delete(IdsDto requestBody)
     {
-        try
+        requestBody.Ids.ForEach(id =>
         {
-            requestBody.Ids.ForEach(id =>
-            {
-                var build = _ctx.Dormbuild.Single(dm => dm.Id == id);
-                _ctx.Dormbuild.Remove(build);
-            });
-            await _ctx.SaveChangesAsync();
-            return Ok(new ResultDto<string>
-            {
-                Result = "删除成功！"
-            });
-        }
-        catch
+            var build = _ctx.Dormbuild.Where(dm => dm.Id == id);
+            if (build.Any())
+                _ctx.Dormbuild.Remove(build.First());
+        });
+        await _ctx.SaveChangesAsync();
+        return Ok(new ResultDto<string>
         {
-            return BadRequest("无法删除不存在的宿舍楼！");
-        }
+            Result = "删除成功！"
+        });
     }
 }
