@@ -73,6 +73,13 @@ public class Admin
         },
         new Sidebar
         {
+            Path = "/announcement",
+            Name = "Announcement",
+            Component = "/announcement/index",
+            Meta = new Meta { Title = "公告管理" }
+        },
+        new Sidebar
+        {
             Path = "/personalCenter",
             Name = "PersonalCenter",
             Component = "/personalCenter/index",

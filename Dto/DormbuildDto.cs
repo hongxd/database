@@ -4,9 +4,9 @@ namespace database.Dto;
 
 public class DormbuildPaginableDto : DormbuildDto, IPaginable
 {
-    public int? Page { get; set; } = 1;
+    public int? Page { get; set; }
 
-    public int? PageSize { get; set; } = 10;
+    public int? PageSize { get; set; }
 }
 
 public class DormbuildDto : Dormbuild

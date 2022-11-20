@@ -90,6 +90,7 @@ public class DormbuildController : ControllerBase
     }
 
     [HttpDelete]
+    // 删除宿舍时级联删除学生表中的宿舍id
     public async Task<ActionResult<ResultDto<string>>> Delete(IdsDto requestBody)
     {
         requestBody.Ids.ForEach(id =>
