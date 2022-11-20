@@ -14,12 +14,6 @@ public class DormmanagerConfig : IEntityTypeConfiguration<Dormmanager>
             .HasComment("用户名，用于登录系统").IsRequired();
         builder.Property(dormmanager => dormmanager.Password).HasColumnName("password").HasMaxLength(20)
             .HasComment("密码").IsRequired();
-        builder.Property(dormmanager => dormmanager.DormBuildId).HasColumnName("dormBuildId").HasComment("宿舍楼Id")
-            .IsRequired(false);
-        builder.Property(dormmanager => dormmanager.DormBuildDetail).HasColumnName("dormBuildName").HasMaxLength(50)
-            .HasComment("宿舍楼名字").IsRequired(false);
-        builder.Property(dormmanager => dormmanager.DormBuildDetail).HasColumnName("dormBuildDetail").HasMaxLength(50)
-            .HasComment("宿舍楼详细说明").IsRequired(false);
         builder.Property(dormmanager => dormmanager.Name).HasColumnName("name").HasMaxLength(10).HasComment("真实姓名")
             .IsRequired();
         builder.Property(dormmanager => dormmanager.Sex).HasColumnName("sex").HasComment("性别").IsRequired();

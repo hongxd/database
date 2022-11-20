@@ -20,27 +20,30 @@ public class DormbuildController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<QueryResultDto<DormbuildDto>> Get([FromQuery] DormbuildDto dorm)
+    public ActionResult<QueryResultDto<DormbuildDto>> Get([FromQuery] DormbuildPaginableDto dorm)
     {
-        var whereExp = Query.ConfigQuery(dorm);
-        var data = from db in _ctx.Dormbuild.FromSqlRaw($@"select * from dormbuild {whereExp}")
+        Dictionary<string, string?> dict = new()
+        {
+            { "name", dorm.Name },
+            { "managerName", dorm.ManagerName },
+            { "detail", dorm.Detail }
+        };
+        var data = (from db in _ctx.Dormbuild
             join dm in _ctx.Dormmanager on db.Dormmanager equals dm.Id into gj
             from subDm in gj.DefaultIfEmpty()
-            select new DormbuildDto
+            select new DormbuildPaginableDto
             {
                 Detail = db.Detail,
                 Dormmanager = db.Dormmanager,
                 Id = db.Id,
                 Name = db.Name,
-                ManagerName = subDm.Name
-            };
-        data = data.AsNoTracking();
-        var list = Query.ConfigPaging(data, dorm).ToArray();
+                ManagerName = subDm.UserName
+            }).ConfigStringQuery(dict).AsNoTracking();
         return Ok(new QueryResultDto<DormbuildDto>
         {
             Result = new QueryDto<DormbuildDto>
             {
-                List = list,
+                List = data.ConfigPaging(dorm).ToArray(),
                 Total = data.Count()
             }
         });
@@ -64,7 +67,8 @@ public class DormbuildController : ControllerBase
         {
             // 传的宿舍楼id不在数据库里
             var db = _ctx.Dormbuild.Where(d => d.Id == build.Id);
-            if (_ctx.Dormbuild.Any(d => d.Name == build.Name)) return BadRequest("已有相同名字的宿舍，请更换一个名字");
+            var dmn = _ctx.Dormbuild.Where(d => d.Name == build.Name);
+            if (dmn.Any() && build.Name != dmn.First().Name) return BadRequest("已有相同名字的宿舍，请更换一个名字");
             if (!db.Any()) return BadRequest("错误请求");
 
             var d = db.First();

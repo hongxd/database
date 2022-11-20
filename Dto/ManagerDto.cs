@@ -2,8 +2,13 @@
 
 namespace database.Dto;
 
-public class ManagerDto : Dormmanager, IPaginable
+public class ManagerPaginableDto : ManagerDto, IPaginable
 {
-    public int Page { get; set; } = 1;
-    public int PageSize { get; set; } = 10;
+    public int? Page { get; set; }
+    public int? PageSize { get; set; }
+}
+
+public class ManagerDto : Dormmanager
+{
+    public string? DormBuildName { get; set; }
 }

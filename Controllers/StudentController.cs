@@ -3,6 +3,7 @@ using database.Dto;
 using database.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using static database.Utils.GlobalRole;
 using static database.Utils.UserValue;
 
@@ -21,7 +22,7 @@ public class StudentController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<QueryResultDto<StudentDto>> Get([FromQuery] StudentDto stu)
+    public ActionResult<QueryResultDto<StudentDto>> Get([FromQuery] StudentPaginableDto stu)
     {
         var role = User.FindFirstValue(ClaimTypes.Role);
         Dictionary<string, string?> dict = new()
@@ -34,7 +35,7 @@ public class StudentController : ControllerBase
         var data = (from s in _ctx.Student
             join db in _ctx.Dormbuild on s.DormBuildId equals db.Id into gj
             from subDb in gj.DefaultIfEmpty()
-            select new StudentDto
+            select new StudentPaginableDto
             {
                 Id = s.Id,
                 Name = s.Name,
@@ -43,7 +44,7 @@ public class StudentController : ControllerBase
                 DormBuildId = s.DormBuildId,
                 StuNum = s.StuNum,
                 DormName = subDb.Name
-            }).ConfigStringQuery(dict).ConfigEqualSingleQuery("sex", stu.Sex);
+            }).ConfigStringQuery(dict).ConfigEqualSingleQuery("sex", stu.Sex).AsNoTracking();
 
         switch (role)
         {
@@ -62,13 +63,13 @@ public class StudentController : ControllerBase
                 // 管理员只能查看自己管理宿舍里的学生(最多管理一栋宿舍)
                 var id = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
-                var stus = data.Where(student => student.DormBuildId == dm.DormBuildId);
-                return Ok(new QueryResultDto<StudentDto>
+                // var stus = data.Where(student => student.DormBuildId == dm.DormBuildId);
+                return Ok(new QueryResultDto<StudentPaginableDto>
                 {
-                    Result = new QueryDto<StudentDto>
+                    Result = new QueryDto<StudentPaginableDto>
                     {
-                        List = stus.ConfigPaging(stu).ToArray(),
-                        Total = stus.Count()
+                        List = data.ConfigPaging(stu).ToArray(),
+                        Total = data.Count()
                     }
                 });
             }
@@ -79,7 +80,7 @@ public class StudentController : ControllerBase
 
     [HttpPut]
     [Authorize(Roles = Admin)]
-    public async Task<ActionResult<ResultDto<string>>> Put(StudentDto stu)
+    public async Task<ActionResult<ResultDto<string>>> Put(StudentPaginableDto stu)
     {
         var id = stu.DormBuildId;
         var sno = stu.StuNum;

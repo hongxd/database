@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
 using database.Dto;
-using database.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static database.Utils.Gender;
+using static database.Utils.GlobalRole;
 
 namespace database.Controllers;
 
@@ -26,7 +26,7 @@ public class PersonalCenterController : ControllerBase
         var role = User.FindFirstValue(ClaimTypes.Role);
         switch (role)
         {
-            case GlobalRole.Admin:
+            case Admin:
             {
                 var p = _ctx.Admin.Single(admin => admin.Id == id);
                 return Ok(new ResultDto<PersonDto>
@@ -41,10 +41,9 @@ public class PersonalCenterController : ControllerBase
                     }
                 });
             }
-            case GlobalRole.DormManager:
+            case DormManager:
             {
                 var p = _ctx.Dormmanager.Single(dm => dm.Id == id);
-                var d = _ctx.Dormbuild.Single(d => d.Id == p.DormBuildId);
                 return Ok(new ResultDto<PersonDto>
                 {
                     Result = new PersonDto
@@ -53,13 +52,11 @@ public class PersonalCenterController : ControllerBase
                         Sex = p.Sex,
                         Tel = p.Tel,
                         Username = p.UserName,
-                        DormBuildName = d.Name,
-                        DormBuildDetail = d.Detail,
-                        Role = "dormmanager"
+                        Role = DormManager
                     }
                 });
             }
-            case GlobalRole.Student:
+            case Student:
             {
                 var p = _ctx.Student.Single(dm => dm.Id == id);
                 var d = _ctx.Dormbuild.Single(d => d.Id == p.DormBuildId);
@@ -73,7 +70,7 @@ public class PersonalCenterController : ControllerBase
                         Username = p.StuNum,
                         DormBuildName = d.Name,
                         DormBuildDetail = d.Detail,
-                        Role = "student"
+                        Role = Student
                     }
                 });
             }
@@ -91,7 +88,7 @@ public class PersonalCenterController : ControllerBase
         if (p.Sex is not (Male or Female)) return BadRequest("性别只能为男或女");
         switch (role)
         {
-            case GlobalRole.Admin:
+            case Admin:
             {
                 var admin = _ctx.Admin.Single(admin => admin.Id == id);
                 admin.UserName = p.Username;
@@ -100,7 +97,7 @@ public class PersonalCenterController : ControllerBase
                 admin.Tel = p.Tel;
                 break;
             }
-            case GlobalRole.DormManager:
+            case DormManager:
             {
                 var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
                 dm.UserName = p.Username;
@@ -109,7 +106,7 @@ public class PersonalCenterController : ControllerBase
                 dm.Tel = p.Tel;
                 break;
             }
-            case GlobalRole.Student:
+            case Student:
             {
                 var stu = _ctx.Student.Single(student => student.Id == id);
                 if (stu.StuNum != p.Username) return BadRequest("学生的用户名只能为学生的学号");

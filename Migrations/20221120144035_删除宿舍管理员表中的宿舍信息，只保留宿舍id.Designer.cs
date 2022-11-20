@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using database;
 
@@ -11,9 +12,11 @@ using database;
 namespace database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221120144035_删除宿舍管理员表中的宿舍信息，只保留宿舍id")]
+    partial class 删除宿舍管理员表中的宿舍信息只保留宿舍id
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,6 +112,11 @@ namespace database.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id")
                         .HasComment("宿舍管理员Id，唯一");
+
+                    b.Property<Guid?>("DormBuildId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("dormBuildId")
+                        .HasComment("宿舍楼Id");
 
                     b.Property<string>("Name")
                         .IsRequired()

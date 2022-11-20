@@ -19,7 +19,9 @@ public static class Query
     {
         var page = pageConfig.Page;
         var pageSize = pageConfig.PageSize;
-        return data.Skip((page - 1) * 10).Take(pageSize);
+        if (page != null) data = data.Skip((int)((page - 1) * 10));
+        if (pageSize != null) data = data.Take((int)pageSize);
+        return data;
     }
 
     public static string ConfigQuery<T>(T query) where T : class

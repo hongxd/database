@@ -6,9 +6,6 @@ public class Dormmanager
     public Guid? Id { get; set; }
     public string? UserName { get; set; }
     protected internal string? Password { get; set; }
-    public Guid? DormBuildId { get; set; }
-    public string? DormBuildDetail { get; set; }
-    public string? DormBuildName { get; set; }
 
     public string? Name { get; set; }
     public int? Sex { get; set; }

@@ -1,5 +1,4 @@
 ﻿using database.Dto;
-using database.Entities;
 using database.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,16 +19,29 @@ public class ManagerController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<QueryResultDto<Dormmanager>> Get([FromQuery] ManagerDto dm)
+    public ActionResult<QueryResultDto<ManagerDto>> Get([FromQuery] ManagerPaginableDto dm)
     {
-        var whereExp = Query.ConfigQuery(dm);
-        var data = _ctx.Dormmanager.FromSqlRaw(@$"select * from dormmanager {whereExp}");
-        var manager = Query.ConfigPaging(data, dm).ToArray();
-        return Ok(new QueryResultDto<Dormmanager>
+        Dictionary<string, string?> dict = new()
+        {
+            { "name", dm.Name },
+            { "tel", dm.Tel },
+            { "userName", dm.UserName },
+            { "dormBuildName", dm.DormBuildName }
+        };
+        var data = (from dormM in _ctx.Dormmanager
+            select new ManagerDto
             {
-                Result = new QueryDto<Dormmanager>
+                Id = dormM.Id,
+                Name = dormM.Name,
+                Sex = dormM.Sex,
+                Tel = dormM.Tel,
+                UserName = dormM.UserName,
+            }).ConfigStringQuery(dict).ConfigEqualSingleQuery("sex", dm.Sex).AsNoTracking();
+        return Ok(new QueryResultDto<ManagerDto>
+            {
+                Result = new QueryDto<ManagerDto>
                 {
-                    List = manager,
+                    List = data.ConfigPaging(dm).ToArray(),
                     Total = data.Count()
                 }
             }
