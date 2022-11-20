@@ -1,7 +1,12 @@
 ﻿namespace database.Utils;
 
-public enum Gender
+// public enum Gender
+// {
+//     Female,
+//     Male
+// }
+public static class Gender
 {
-    Female,
-    Male
+    public const int Female = 0;
+    public const int Male = 1;
 }

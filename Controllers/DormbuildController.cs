@@ -3,6 +3,7 @@ using database.Entities;
 using database.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace database.Controllers;
 
@@ -21,7 +22,8 @@ public class DormbuildController : ControllerBase
     [HttpGet]
     public ActionResult<QueryResultDto<DormbuildDto>> Get([FromQuery] DormbuildDto dorm)
     {
-        var data = from db in _ctx.Dormbuild
+        var whereExp = Query.ConfigQuery(dorm);
+        var data = from db in _ctx.Dormbuild.FromSqlRaw($@"select * from dormbuild {whereExp}")
             join dm in _ctx.Dormmanager on db.Dormmanager equals dm.Id into gj
             from subDm in gj.DefaultIfEmpty()
             select new DormbuildDto
@@ -32,6 +34,7 @@ public class DormbuildController : ControllerBase
                 Name = db.Name,
                 ManagerName = subDm.Name
             };
+        data = data.AsNoTracking();
         var list = Query.ConfigPaging(data, dorm).ToArray();
         return Ok(new QueryResultDto<DormbuildDto>
         {

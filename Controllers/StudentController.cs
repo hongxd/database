@@ -3,7 +3,8 @@ using database.Dto;
 using database.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using static database.Utils.GlobalRole;
+using static database.Utils.UserValue;
 
 namespace database.Controllers;
 
@@ -20,14 +21,20 @@ public class StudentController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<QueryResultDto<StudentResDto>> Get([FromQuery] StudentDto stu)
+    public ActionResult<QueryResultDto<StudentDto>> Get([FromQuery] StudentDto stu)
     {
         var role = User.FindFirstValue(ClaimTypes.Role);
-        var whereExp = Query.ConfigQuery(stu);
-        var data = from s in _ctx.Student.FromSqlRaw(@$"select * from student {whereExp}")
+        Dictionary<string, string?> dict = new()
+        {
+            { "stuNum", stu.StuNum },
+            { "name", stu.Name },
+            { "tel", stu.Tel },
+            { "dormName", stu.DormName }
+        };
+        var data = (from s in _ctx.Student
             join db in _ctx.Dormbuild on s.DormBuildId equals db.Id into gj
             from subDb in gj.DefaultIfEmpty()
-            select new StudentResDto
+            select new StudentDto
             {
                 Id = s.Id,
                 Name = s.Name,
@@ -36,31 +43,31 @@ public class StudentController : ControllerBase
                 DormBuildId = s.DormBuildId,
                 StuNum = s.StuNum,
                 DormName = subDb.Name
-            };
+            }).ConfigStringQuery(dict).ConfigEqualSingleQuery("sex", stu.Sex);
 
         switch (role)
         {
-            case GlobalRole.Admin:
-                var list = Query.ConfigPaging(data, stu).ToArray();
-                return Ok(new QueryResultDto<StudentResDto>
+            case Admin:
+                var list = data.ConfigPaging(stu).ToArray();
+                return Ok(new QueryResultDto<StudentDto>
                 {
-                    Result = new QueryDto<StudentResDto>
+                    Result = new QueryDto<StudentDto>
                     {
                         List = list,
                         Total = data.Count()
                     }
                 });
-            case GlobalRole.DormManager:
+            case DormManager:
             {
                 // 管理员只能查看自己管理宿舍里的学生(最多管理一栋宿舍)
                 var id = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
                 var stus = data.Where(student => student.DormBuildId == dm.DormBuildId);
-                return Ok(new QueryResultDto<StudentResDto>
+                return Ok(new QueryResultDto<StudentDto>
                 {
-                    Result = new QueryDto<StudentResDto>
+                    Result = new QueryDto<StudentDto>
                     {
-                        List = Query.ConfigPaging(stus, stu).ToArray(),
+                        List = stus.ConfigPaging(stu).ToArray(),
                         Total = stus.Count()
                     }
                 });
@@ -71,12 +78,12 @@ public class StudentController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize(Roles = GlobalRole.Admin)]
+    [Authorize(Roles = Admin)]
     public async Task<ActionResult<ResultDto<string>>> Put(StudentDto stu)
     {
         var id = stu.DormBuildId;
         var sno = stu.StuNum;
-        var result = @$"添加成功！默认密码为{UserValue.DefaultPassword}";
+        var result = @$"添加成功！默认密码为{DefaultPassword}";
         // 提供id是修改模式，不提供id是删除模式
         if (stu.Id == null)
         {
@@ -84,7 +91,7 @@ public class StudentController : ControllerBase
             if (student.Any())
                 // 执行修改操作
                 return BadRequest("已存在相同学号学生！");
-            stu.Password = UserValue.DefaultPassword;
+            stu.Password = DefaultPassword;
             var dorm = _ctx.Dormbuild.Where(db => db.Id == id);
             if (!dorm.Any())
                 return BadRequest("不存在此宿舍！");

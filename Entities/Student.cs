@@ -1,6 +1,4 @@
-﻿using database.Utils;
-
-namespace database.Entities;
+﻿namespace database.Entities;
 
 public class Student
 {
@@ -9,6 +7,6 @@ public class Student
     protected internal string? Password { get; set; }
     public string? Name { get; set; }
     public Guid? DormBuildId { get; set; }
-    public Gender? Sex { get; set; }
+    public int? Sex { get; set; }
     public string? Tel { get; set; }
 }

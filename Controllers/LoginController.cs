@@ -6,6 +6,7 @@ using database.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using static database.Utils.GlobalRole;
 
 namespace database.Controllers;
 
@@ -62,13 +63,13 @@ public class LoginController : ControllerBase
                 if (adm.Any())
                 {
                     id = adm.First().Id;
-                    role = "admin";
+                    role = Admin;
                     name = adm.First().UserName;
                 }
                 else
                 {
                     id = manager.First().Id;
-                    role = "dormmanager";
+                    role = DormManager;
                     name = manager.First().UserName;
                 }
 
@@ -91,7 +92,7 @@ public class LoginController : ControllerBase
                 {
                     Result = new LoginResultDto
                     {
-                        Token = GetToken(stu.First().Id, stu.First().Name, "student")
+                        Token = GetToken(stu.First().Id, stu.First().Name, Student)
                     }
                 });
             }

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using database.Dto;
+using database.Utils;
 using database.Utils.SidebarList;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,9 @@ public class SidebarListController : ControllerBase
         var role = User.FindFirstValue(ClaimTypes.Role);
         return role switch
         {
-            "admin" => new ResultDto<List<Sidebar>> { Result = SidebarList.Admin() },
-            "dormmanager" => new ResultDto<List<Sidebar>> { Result = SidebarList.Dormmanager() },
-            "student" => new ResultDto<List<Sidebar>> { Result = SidebarList.Student() },
+            GlobalRole.Admin => new ResultDto<List<Sidebar>> { Result = SidebarList.Admin() },
+            GlobalRole.DormManager => new ResultDto<List<Sidebar>> { Result = SidebarList.Dormmanager() },
+            GlobalRole.Student => new ResultDto<List<Sidebar>> { Result = SidebarList.Student() },
             _ => throw new Exception("用户信息异常[GetSidebarListController]")
         };
     }

@@ -3,6 +3,7 @@ using database.Dto;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static database.Utils.GlobalRole;
 
 namespace database.Controllers;
 
@@ -26,38 +27,38 @@ public class UserInfoController : ControllerBase
         var accessToken = await HttpContext.GetTokenAsync("access_token");
         switch (role)
         {
-            case "admin":
+            case Admin:
+            {
+                var admin = _ctx.Admin.Single(ad => ad.Id == id);
+                return Ok(new ResultDto<UserInfoDto>
                 {
-                    var admin = _ctx.Admin.Single(ad => ad.Id == id);
-                    return Ok(new ResultDto<UserInfoDto>
+                    Result = new UserInfoDto
                     {
-                        Result = new UserInfoDto
-                        {
-                            Id = id,
-                            Username = admin.UserName,
-                            Name = admin.Name,
-                            Password = admin.Password,
-                            Token = accessToken,
-                            Roles = new List<Roles> { new() { RoleName = admin.UserName, Value = "admin" } },
-                        }
-                    });
-                }
-            case "dormmanager":
+                        Id = id,
+                        Username = admin.UserName,
+                        Name = admin.Name,
+                        Password = admin.Password,
+                        Token = accessToken,
+                        Roles = new List<Roles> { new() { RoleName = admin.UserName, Value = Admin } }
+                    }
+                });
+            }
+            case DormManager:
+            {
+                var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
+                return Ok(new ResultDto<UserInfoDto>
                 {
-                    var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
-                    return Ok(new ResultDto<UserInfoDto>
+                    Result = new UserInfoDto
                     {
-                        Result = new UserInfoDto
-                        {
-                            Id = id,
-                            Username = dm.UserName,
-                            Name = dm.Name,
-                            Password = dm.Password,
-                            Token = accessToken,
-                            Roles = new List<Roles> { new() { RoleName = dm.UserName, Value = "dormmanager" } },
-                        }
-                    });
-                }
+                        Id = id,
+                        Username = dm.UserName,
+                        Name = dm.Name,
+                        Password = dm.Password,
+                        Token = accessToken,
+                        Roles = new List<Roles> { new() { RoleName = dm.UserName, Value = DormManager } }
+                    }
+                });
+            }
         }
 
         return BadRequest("错误请求");
