@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using database;
 
@@ -11,9 +12,11 @@ using database;
 namespace database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221121015551_增加公告表中公告标题字段")]
+    partial class 增加公告表中公告标题字段
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,25 +165,23 @@ namespace database.Migrations
                         .HasComment("公告Id，唯一");
 
                     b.Property<string>("Content")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("content")
                         .HasComment("发布内容");
 
                     b.Property<DateTime?>("Date")
-                        .IsRequired()
                         .HasColumnType("datetime2")
                         .HasColumnName("date")
                         .HasComment("公告发布日期");
 
                     b.Property<Guid>("PId")
+                        .HasMaxLength(20)
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("Pid")
-                        .HasComment("公告发布人id");
+                        .HasComment("公告发布人");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("title")
