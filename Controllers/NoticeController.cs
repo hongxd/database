@@ -30,15 +30,16 @@ public class NoticeController : ControllerBase
             // { "date", n.Date.ToString() }
         };
 
+        // 这里不传content
         var nts = _ctx.NoticeDto
-            .FromSqlRaw(@"select distinct Pid, content, date, noticePerson, title, n.id
-            from notice n
-            left join (select id, userName noticePerson
-                    from admin
-                    union
-                    select id, userName
-                    from dormmanager) as u
-                   ON u.id = n.Pid")
+            .FromSqlRaw(@"select distinct Pid,title,date,noticePerson,n.id,null as content
+                        from notice n
+                        left join (select id, userName noticePerson
+                                from admin
+                                union
+                                select id, userName
+                                from dormmanager) as p
+                               ON p.id = n.Pid")
             .ConfigStringQuery(dict).ConfigPaging(n).AsNoTracking();
         return Ok(new ResultDto<NoticeDto[]>
         {
@@ -47,18 +48,37 @@ public class NoticeController : ControllerBase
     }
 
     [HttpGet(@"{id}")]
-    public ActionResult<ResultDto<NoticeDb>> Get(Guid id)
+    public ActionResult<ResultDto<NoticeDto>> Get(Guid id)
     {
-        return Ok(_ctx.Notice.Single(notice => notice.Id == id));
+        try
+        {
+            var res = _ctx.Notice.Where(db => db.Id == id).AsNoTracking().First();
+            return Ok(new ResultDto<NoticeDto>
+            {
+                Result = new NoticeDto
+                {
+                    Id = res.Id,
+                    Content = res.Content,
+                    Date = res.Date,
+                    Title = res.Title,
+                    PId = res.PId
+                }
+            });
+        }
+        catch
+        {
+            return BadRequest("不存在此公告");
+        }
     }
 
     [HttpPut]
-    public async Task<ActionResult<ResultDto<string>>> Put(ContentDto c)
+    public async Task<ActionResult<ResultDto<string>>> Put(NoticeDto n)
     {
-        var pid = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var pid = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
         var notice = new NoticeDb
         {
-            Content = c.Content,
+            Content = n.Content,
+            Title = n.Title,
             Date = DateTime.Now,
             PId = pid
         };
@@ -70,22 +90,15 @@ public class NoticeController : ControllerBase
     [HttpDelete]
     public async Task<ActionResult<ResultDto<string>>> Delete(IdsDto requestBody)
     {
-        try
+        requestBody.Ids.ForEach(id =>
         {
-            requestBody.Ids.ForEach(id =>
-            {
-                var notice = _ctx.Notice.Single(notice => notice.Id == id);
-                _ctx.Notice.Remove(notice);
-            });
-            await _ctx.SaveChangesAsync();
-            return Ok(new ResultDto<string>
-            {
-                Result = "删除成功"
-            });
-        }
-        catch
+            var notice = _ctx.Notice.Single(notice => notice.Id == id);
+            _ctx.Notice.Remove(notice);
+        });
+        await _ctx.SaveChangesAsync();
+        return Ok(new ResultDto<string>
         {
-            return BadRequest("无法删除不存在的公告！");
-        }
+            Result = "删除成功"
+        });
     }
 }

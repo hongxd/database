@@ -122,22 +122,15 @@ public class StudentController : ControllerBase
     [HttpDelete]
     public async Task<ActionResult<ResultDto<string>>> Delete(IdsDto requestBody)
     {
-        try
+        requestBody.Ids.ForEach(id =>
         {
-            requestBody.Ids.ForEach(id =>
-            {
-                var student = _ctx.Student.Single(dm => dm.Id == id);
-                _ctx.Student.Remove(student);
-            });
-            await _ctx.SaveChangesAsync();
-            return Ok(new ResultDto<string>
-            {
-                Result = "删除成功！"
-            });
-        }
-        catch
+            var student = _ctx.Student.Single(dm => dm.Id == id);
+            _ctx.Student.Remove(student);
+        });
+        await _ctx.SaveChangesAsync();
+        return Ok(new ResultDto<string>
         {
-            return BadRequest("无法删除不存在的学生！");
-        }
+            Result = "删除成功！"
+        });
     }
 }

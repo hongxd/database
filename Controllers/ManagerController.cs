@@ -35,7 +35,7 @@ public class ManagerController : ControllerBase
                 Name = dormM.Name,
                 Sex = dormM.Sex,
                 Tel = dormM.Tel,
-                UserName = dormM.UserName,
+                UserName = dormM.UserName
             }).ConfigStringQuery(dict).ConfigEqualSingleQuery("sex", dm.Sex).AsNoTracking();
         return Ok(new QueryResultDto<ManagerDto>
             {
@@ -82,22 +82,15 @@ public class ManagerController : ControllerBase
     [HttpDelete]
     public async Task<ActionResult<ResultDto<string>>> Delete([FromBody] IdsDto requestBody)
     {
-        try
+        requestBody.Ids.ForEach(id =>
         {
-            requestBody.Ids.ForEach(id =>
-            {
-                var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
-                _ctx.Dormmanager.Remove(dm);
-            });
-            await _ctx.SaveChangesAsync();
-            return Ok(new ResultDto<string>
-            {
-                Result = "删除成功！"
-            });
-        }
-        catch
+            var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
+            _ctx.Dormmanager.Remove(dm);
+        });
+        await _ctx.SaveChangesAsync();
+        return Ok(new ResultDto<string>
         {
-            return BadRequest("无法删除不存在的管理员！");
-        }
+            Result = "删除成功！"
+        });
     }
 }

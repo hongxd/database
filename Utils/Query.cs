@@ -59,24 +59,23 @@ public static class Query
         return value == null ? data : data.Where($"{name}=={value}");
     }
 
-
-    public static Dictionary<string, string> GenerateParametersDictionary<T>(T dto, string[]? excludeFields = null)
-    {
-        var properties = typeof(T).GetProperties();
-        var parameters = new Dictionary<string, string>();
-        excludeFields ??= defaultExcludeFields;
-
-        foreach (var property in properties)
-        {
-            var propertyValue = property.GetValue(dto);
-
-            if (propertyValue is null or "") continue;
-            if (excludeFields != null && excludeFields.Contains(property.Name)) continue;
-            if (propertyValue == property.Name) continue;
-            if (parameters.ContainsKey(property.Name)) continue;
-            parameters.Add(property.Name, propertyValue.ToString());
-        }
-
-        return parameters;
-    }
+    // public static Dictionary<string, string> GenerateParametersDictionary<T>(T dto, string[]? excludeFields = null)
+    // {
+    //     var properties = typeof(T).GetProperties();
+    //     var parameters = new Dictionary<string, string>();
+    //     excludeFields ??= defaultExcludeFields;
+    //
+    //     foreach (var property in properties)
+    //     {
+    //         var propertyValue = property.GetValue(dto);
+    //
+    //         if (propertyValue is null or "") continue;
+    //         if (excludeFields != null && excludeFields.Contains(property.Name)) continue;
+    //         if (propertyValue == property.Name) continue;
+    //         if (parameters.ContainsKey(property.Name)) continue;
+    //         parameters.Add(property.Name, propertyValue.ToString());
+    //     }
+    //
+    //     return parameters;
+    // }
 }
