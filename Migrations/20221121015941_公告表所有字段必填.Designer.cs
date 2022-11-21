@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using database;
 
@@ -11,9 +12,11 @@ using database;
 namespace database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221121015941_公告表所有字段必填")]
+    partial class 公告表所有字段必填
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,32 +24,6 @@ namespace database.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("database.Dto.NoticeDto", b =>
-                {
-                    b.Property<Guid?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("NoticePerson")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("PId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NoticeDto");
-                });
 
             modelBuilder.Entity("database.Entities.Admin", b =>
                 {
@@ -179,9 +156,9 @@ namespace database.Migrations
                         });
                 });
 
-            modelBuilder.Entity("database.Entities.NoticeDb", b =>
+            modelBuilder.Entity("database.Entities.Notice", b =>
                 {
-                    b.Property<Guid?>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id")
@@ -200,8 +177,7 @@ namespace database.Migrations
                         .HasColumnName("date")
                         .HasComment("公告发布日期");
 
-                    b.Property<Guid?>("PId")
-                        .IsRequired()
+                    b.Property<Guid>("PId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("Pid")
                         .HasComment("公告发布人id");

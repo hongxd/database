@@ -41,7 +41,7 @@ public class StudentController : ControllerBase
                 Name = s.Name,
                 Sex = s.Sex,
                 Tel = s.Tel,
-                DormBuildId = s.DormBuildId,
+                DormBuildId = subDb.Id,
                 StuNum = s.StuNum,
                 DormName = subDb.Name
             }).ConfigStringQuery(dict).ConfigEqualSingleQuery("sex", stu.Sex).AsNoTracking();

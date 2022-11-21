@@ -15,23 +15,13 @@ public static class Query
     /// <param name="pageConfig">带有页数和偏移量的类（必须是已实例化的）</param>
     /// <typeparam name="T">DbSet的类型</typeparam>
     /// <returns>配置好的内容</returns>
-    public static IEnumerable<T> ConfigPaging<T>(this IQueryable<T> data, IPaginable pageConfig) where T : class
+    public static IQueryable<T> ConfigPaging<T>(this IQueryable<T> data, IPaginable pageConfig) where T : class
     {
         var page = pageConfig.Page;
         var pageSize = pageConfig.PageSize;
         if (page != null) data = data.Skip((int)((page - 1) * 10));
         if (pageSize != null) data = data.Take((int)pageSize);
         return data;
-    }
-
-    public static string ConfigQuery<T>(T query) where T : class
-    {
-        StringBuilder whereExp = new();
-        var dict = GenerateParametersDictionary(query);
-        foreach (var (key, value) in dict) whereExp.Append($@"{key} like '%{value}%' and ");
-
-        if (whereExp.Length != 0) whereExp.Insert(0, @" where ").Remove(whereExp.Length - 4, 3);
-        return whereExp.ToString();
     }
 
     /// <summary>
@@ -49,6 +39,7 @@ public static class Query
             if (value is not null or "")
                 exp.Append($"{key}.Contains(\"{value}\")&&");
         var len = exp.Length;
+        // exp.Append($"EF.Functions.Like({key},\"{value}\")&&");
         if (len == 0) return data;
         exp.Remove(len - 2, 2);
         return data.Where(exp.ToString());

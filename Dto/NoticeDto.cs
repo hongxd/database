@@ -10,5 +10,5 @@ public class NoticePaginableDto : NoticeDto, IPaginable
 
 public class NoticeDto : Notice
 {
-    public string NoticePerson { get; set; }
+    public string? NoticePerson { get; set; }
 }

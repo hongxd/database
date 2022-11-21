@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
 using database.Dto;
 using database.Entities;
+using database.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace database.Controllers;
 
@@ -19,27 +21,33 @@ public class NoticeController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<ResultDto<List<NoticeDto>?>> Get()
+    public ActionResult<ResultDto<NoticeDto[]>> Get([FromQuery] NoticePaginableDto n)
     {
-        var nts = from notice in _ctx.Set<Notice>()
-                  join admin in _ctx.Set<Admin>()
-                      on notice.PId equals admin.Id
-                  select new NoticeDto
-                  {
-                      Id = notice.Id,
-                      NoticePerson = admin.UserName,
-                      Content = notice.Content,
-                      Date = notice.Date,
-                      PId = admin.Id
-                  };
-        return Ok(new ResultDto<List<NoticeDto>?>
+        Dictionary<string, string?> dict = new()
         {
-            Result = nts.ToList()
+            { "title", n.Title },
+            { "noticePerson", n.NoticePerson }
+            // { "date", n.Date.ToString() }
+        };
+
+        var nts = _ctx.NoticeDto
+            .FromSqlRaw(@"select distinct Pid, content, date, noticePerson, title, n.id
+            from notice n
+            left join (select id, userName noticePerson
+                    from admin
+                    union
+                    select id, userName
+                    from dormmanager) as u
+                   ON u.id = n.Pid")
+            .ConfigStringQuery(dict).ConfigPaging(n).AsNoTracking();
+        return Ok(new ResultDto<NoticeDto[]>
+        {
+            Result = nts.ToArray()
         });
     }
 
     [HttpGet(@"{id}")]
-    public ActionResult<ResultDto<Notice?>> Get(Guid id)
+    public ActionResult<ResultDto<NoticeDb>> Get(Guid id)
     {
         return Ok(_ctx.Notice.Single(notice => notice.Id == id));
     }
@@ -48,7 +56,7 @@ public class NoticeController : ControllerBase
     public async Task<ActionResult<ResultDto<string>>> Put(ContentDto c)
     {
         var pid = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var notice = new Notice
+        var notice = new NoticeDb
         {
             Content = c.Content,
             Date = DateTime.Now,
@@ -72,7 +80,7 @@ public class NoticeController : ControllerBase
             await _ctx.SaveChangesAsync();
             return Ok(new ResultDto<string>
             {
-                Result = "删除成功",
+                Result = "删除成功"
             });
         }
         catch

@@ -4,6 +4,7 @@ using System.Text;
 using database.Dto;
 using database.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using static database.Utils.GlobalRole;
@@ -49,35 +50,19 @@ public class LoginController : ControllerBase
             // 管理员登录
             case Role.Manager:
             {
-                var adm = _context.Admin
-                    .Where(admin => admin.UserName == user.Username && admin.Password == user.Password)
-                    .ToList();
-                var manager = _context.Dormmanager
-                    .Where(dm => dm.UserName == user.Username && dm.Password == user.Password)
-                    .ToList();
-                if (!adm.Any() && !manager.Any()) return BadRequest("用户名或密码错误");
-
-                Guid? id;
-                string role;
-                string? name;
-                if (adm.Any())
-                {
-                    id = adm.First().Id;
-                    role = Admin;
-                    name = adm.First().UserName;
-                }
-                else
-                {
-                    id = manager.First().Id;
-                    role = DormManager;
-                    name = manager.First().UserName;
-                }
+                var loginRes = _context.User.FromSqlRaw(
+                    @$"select * from 
+                        (select userName,password,id,'admin' role from admin union 
+                            select userName,password,id,'dormmanager' role from dormmanager) u 
+                                where u.userName='{user.Username}' and u.password='{user.Password}'");
+                if (!loginRes.Any()) return BadRequest("用户名或密码错误");
+                var u = loginRes.First();
 
                 return Ok(new ResultDto<LoginResultDto>
                 {
                     Result = new LoginResultDto
                     {
-                        Token = GetToken(id, name, role)
+                        Token = GetToken(u.Id, u.Username, u.Role)
                     }
                 });
             }

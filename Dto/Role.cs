@@ -3,5 +3,5 @@
 public enum Role
 {
     Manager,
-    Student,
+    Student
 }

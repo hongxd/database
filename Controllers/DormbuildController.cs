@@ -34,7 +34,7 @@ public class DormbuildController : ControllerBase
             select new DormbuildPaginableDto
             {
                 Detail = db.Detail,
-                Dormmanager = db.Dormmanager,
+                Dormmanager = subDm.Id,
                 Id = db.Id,
                 Name = db.Name,
                 ManagerName = subDm.UserName

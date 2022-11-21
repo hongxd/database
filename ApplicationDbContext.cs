@@ -1,21 +1,25 @@
-﻿using database.Entities;
+﻿using database.Dto;
+using database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace database;
 
 public class ApplicationDbContext : DbContext
 {
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    {
+    }
+
     public DbSet<Admin> Admin { get; set; } // 连接哪个实体
-    public DbSet<Notice> Notice { get; set; }
+    public DbSet<NoticeDb> Notice { get; set; }
+    public DbSet<NoticeDto> NoticeDto { get; set; }
     public DbSet<Dormbuild> Dormbuild { get; set; }
     public DbSet<Dormmanager> Dormmanager { get; set; }
     public DbSet<Punchclock> Punchclock { get; set; }
     public DbSet<Punchclockrecord> Punchclockrecord { get; set; }
     public DbSet<Record> Record { get; set; }
     public DbSet<Student> Student { get; set; }
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-    {
-    }
+    public DbSet<User> User { get; set; }
 
     // 连接哪个数据库，已经在注入的时候配置了
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -29,7 +33,7 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);// 从哪连接
+        modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly); // 从哪连接
     }
     // 然后通过Add-Migration Init（init）只是此时操作的名称生成文件
     // 想更新数据库使用Update-database
