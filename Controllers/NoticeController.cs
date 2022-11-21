@@ -50,25 +50,18 @@ public class NoticeController : ControllerBase
     [HttpGet(@"{id}")]
     public ActionResult<ResultDto<NoticeDto>> Get(Guid id)
     {
-        try
+        var res = _ctx.Notice.Where(db => db.Id == id).AsNoTracking().First();
+        return Ok(new ResultDto<NoticeDto>
         {
-            var res = _ctx.Notice.Where(db => db.Id == id).AsNoTracking().First();
-            return Ok(new ResultDto<NoticeDto>
+            Result = new NoticeDto
             {
-                Result = new NoticeDto
-                {
-                    Id = res.Id,
-                    Content = res.Content,
-                    Date = res.Date,
-                    Title = res.Title,
-                    PId = res.PId
-                }
-            });
-        }
-        catch
-        {
-            return BadRequest("不存在此公告");
-        }
+                Id = res.Id,
+                Content = res.Content,
+                Date = res.Date,
+                Title = res.Title,
+                PId = res.PId
+            }
+        });
     }
 
     [HttpPut]
@@ -84,7 +77,7 @@ public class NoticeController : ControllerBase
         };
         await _ctx.Notice.AddAsync(notice);
         await _ctx.SaveChangesAsync();
-        return Ok(new ResultDto<string> { Result = "添加成功" });
+        return Ok(new ResultDto<string> { Result = "成功发布此公告" });
     }
 
     [HttpDelete]

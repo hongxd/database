@@ -80,6 +80,19 @@ public class Admin
         },
         new Sidebar
         {
+            Path = "/announcement/add",
+            Name = "AddAnnouncement",
+            Component = "/announcement/Edit",
+            Meta = new Meta
+            {
+                Title = "添加公告",
+                CurrentActiveMenu = "/announcement",
+                HideMenu = true,
+                HideTab = true
+            }
+        },
+        new Sidebar
+        {
             Path = "/personalCenter",
             Name = "PersonalCenter",
             Component = "/personalCenter/index",

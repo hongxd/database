@@ -25,6 +25,19 @@ public class Dormmanager
             Component = "/announcement/index",
             Meta = new Meta { Title = "公告管理" }
         },
+        new Sidebar
+        {
+            Path = "/announcement/add",
+            Name = "AddAnnouncement",
+            Component = "/announcement/Edit",
+            Meta = new Meta
+            {
+                Title = "添加公告",
+                CurrentActiveMenu = "/announcement",
+                HideMenu = true,
+                HideTab = true
+            }
+        },
         new Sidebar { Meta = new Meta { Title = "打卡记录管理" } },
         new Sidebar { Meta = new Meta { Title = "考勤记录管理" } }
     };
