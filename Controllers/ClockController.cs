@@ -18,9 +18,9 @@ public class ClockController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<ResultDto<List<Punchclock>>> Get()
+    public ActionResult<ResultDto<List<Repair>>> Get()
     {
-        return Ok(new ResultDto<List<Punchclock>>
+        return Ok(new ResultDto<List<Repair>>
         {
             // Result = _ctx.Punchclock.ToList(),
         });
@@ -28,7 +28,7 @@ public class ClockController : ControllerBase
 
     [HttpPut]
     [Authorize(Roles = GlobalRole.Admin)]
-    public async Task<ActionResult<ResultDto<string>>> Put(Punchclock clock)
+    public async Task<ActionResult<ResultDto<string>>> Put(Repair clock)
     {
         // clock.PId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
         // await _ctx.Punchclock.AddAsync(clock);

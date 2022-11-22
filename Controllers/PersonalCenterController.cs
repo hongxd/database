@@ -65,7 +65,7 @@ public class PersonalCenterController : ControllerBase
     public async Task<ActionResult<ResultDto<string>>> Post(PersonDto p)
     {
         // 这里不允许修改宿舍的信息，宿舍的信息只能由管理员修改
-        var id = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var id = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
         var role = User.FindFirstValue(ClaimTypes.Role);
         if (p.Sex is not (Male or Female)) return BadRequest("性别只能为男或女");
         switch (role)

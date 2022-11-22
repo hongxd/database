@@ -11,5 +11,5 @@ public class DormitoryPaginableDto : DormitoryDto, IPaginable
 
 public class DormitoryDto : Dormitory
 {
-    // public string? ManagerName { get; set; }
+    public string? DormBuildName { get; set; }
 }
