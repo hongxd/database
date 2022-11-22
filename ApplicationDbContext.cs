@@ -16,7 +16,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Dormmanager> Dormmanager { get; set; }
 
-    // public DbSet<Punchclock> Punchclock { get; set; }
+    public DbSet<Repair> Repair { get; set; }
+
     // public DbSet<Punchclockrecord> Punchclockrecord { get; set; }
     public DbSet<Dormitory> Dormitory { get; set; }
     public DbSet<Student> Student { get; set; }

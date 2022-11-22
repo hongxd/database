@@ -27,10 +27,7 @@ public class Admin
                     Component = "/dashboard/analysis/index",
                     Meta = new Meta
                     {
-                        //HideMenu = true,
-                        //HideBreadcrumb = true,
                         Title = "routes.dashboard.analysis",
-                        //CurrentActiveMenu = "/dashboard",
                         Icon = "bx:bx-home"
                     }
                 },
@@ -41,10 +38,7 @@ public class Admin
                     Component = "/dashboard/workbench/index",
                     Meta = new Meta
                     {
-                        //HideMenu = true,
-                        //HideBreadcrumb = true,
                         Title = "routes.dashboard.workbench",
-                        //CurrentActiveMenu = "/dashboard",
                         Icon = "bx:bx-home"
                     }
                 }
@@ -52,31 +46,53 @@ public class Admin
         },
         new Sidebar
         {
-            Path = "/dormManager",
-            Name = "DormManager",
-            Component = "/dormManager/index",
-            Meta = new Meta { Title = "宿舍管理员管理" }
+            Path = "/dorm",
+            Name = "Dorm",
+            Redirect = "/dormBuild",
+            Meta = new Meta { Title = "宿舍管理" },
+            Component = "layout",
+            Children = new List<Sidebar>
+            {
+                new()
+                {
+                    Path = "/dormBuild",
+                    Name = "DormBuild",
+                    Component = "/dormBuild/index",
+                    Meta = new Meta { Title = "楼宇管理" }
+                },
+                new()
+                {
+                    Path = "/dormitory",
+                    Name = "Dormitory",
+                    Component = "/dormitory/index",
+                    Meta = new Meta { Title = "寝室管理" }
+                }
+            }
         },
         new Sidebar
         {
-            Path = "/dormBuild",
-            Name = "DormBuild",
-            Component = "/dormBuild/index",
-            Meta = new Meta { Title = "楼宇管理" }
-        },
-        new Sidebar
-        {
-            Path = "/dormitory",
-            Name = "Dormitory",
-            Component = "/dormitory/index",
-            Meta = new Meta { Title = "寝室管理" }
-        },
-        new Sidebar
-        {
-            Path = "/student",
-            Name = "Student",
-            Component = "/student/index",
-            Meta = new Meta { Title = "学生管理" }
+            Path = "/people",
+            Name = "People",
+            Redirect = "/dormManager",
+            Meta = new Meta { Title = "人员管理" },
+            Component = "layout",
+            Children = new List<Sidebar>
+            {
+                new()
+                {
+                    Path = "/dormManager",
+                    Name = "DormManager",
+                    Component = "/dormManager/index",
+                    Meta = new Meta { Title = "管理员管理" }
+                },
+                new()
+                {
+                    Path = "/student",
+                    Name = "Student",
+                    Component = "/student/index",
+                    Meta = new Meta { Title = "学生管理" }
+                }
+            }
         },
         new Sidebar
         {
@@ -100,10 +116,10 @@ public class Admin
         },
         new Sidebar
         {
-            Path = "/punchclock",
-            Name = "Punchclock",
-            Component = "/punchclock/index",
-            Meta = new Meta { Title = "考勤管理" }
+            Path = "/repair",
+            Name = "Repair",
+            Component = "/repair/index",
+            Meta = new Meta { Title = "报修管理" }
         },
         new Sidebar
         {

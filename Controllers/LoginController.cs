@@ -35,7 +35,7 @@ public class LoginController : ControllerBase
         };
         var key = _jwt.Value.SecKey;
         var expires = DateTime.Now.AddSeconds(_jwt.Value.ExpireSeconds);
-        var secBytes = Encoding.UTF8.GetBytes(key);
+        var secBytes = Encoding.UTF8.GetBytes(key ?? throw new InvalidOperationException());
         var secKey = new SymmetricSecurityKey(secBytes);
         var credentials = new SigningCredentials(secKey, SecurityAlgorithms.HmacSha256Signature);
         var tokenDescriptor = new JwtSecurityToken(claims: claims, expires: expires,

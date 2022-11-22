@@ -14,5 +14,6 @@ public class RepairConfig : IEntityTypeConfiguration<Repair>
         builder.Property(repair => repair.Detail).HasColumnName("detail").HasMaxLength(100).HasComment("物品详细描述");
         builder.Property(repair => repair.ReportTime).HasColumnName("reportTime").HasComment("上报时间");
         builder.Property(repair => repair.Status).HasColumnName("status").HasComment("报修状态");
+        builder.Property(repair => repair.DormitoryId).HasColumnName("dormitoryId").HasComment("报修寝室");
     }
 }

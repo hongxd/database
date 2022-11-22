@@ -6,5 +6,6 @@ public class Repair
     public string? Thing { get; set; }
     public string? Detail { get; set; }
     public DateTime? ReportTime { get; set; }
+    public Guid? DormitoryId { get; set; }
     public int? Status { get; set; }
 }

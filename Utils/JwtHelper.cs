@@ -2,8 +2,7 @@
 
 public class JwtHelper
 {
-
-    public string SecKey { get; set; }
+    public string? SecKey { get; set; }
     public int ExpireSeconds { get; set; }
 
     //private readonly string? Jwt;
