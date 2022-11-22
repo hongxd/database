@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using database;
 
@@ -11,9 +12,11 @@ using database;
 namespace database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221122085938_学生表宿舍楼宇id变寝室id")]
+    partial class 学生表宿舍楼宇id变寝室id
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,12 +96,6 @@ namespace database.Migrations
                         .HasColumnType("nvarchar(10)")
                         .HasColumnName("name")
                         .HasComment("宿舍楼名称");
-
-                    b.Property<int?>("Sex")
-                        .IsRequired()
-                        .HasColumnType("int")
-                        .HasColumnName("sex")
-                        .HasComment("宿舍楼居住人的性别");
 
                     b.HasKey("Id");
 

@@ -15,7 +15,7 @@ public class StudentConfig : IEntityTypeConfiguration<Student>
         builder.Property(student => student.Password).HasColumnName("password").HasMaxLength(20).HasComment("密码")
             .IsRequired();
         builder.Property(student => student.Name).HasColumnName("name").HasMaxLength(10).HasComment("姓名").IsRequired();
-        builder.Property(student => student.DormBuildId).HasColumnName("dormBuildId").HasComment("宿舍楼Id").IsRequired();
+        builder.Property(student => student.DormitoryId).HasColumnName("dormitoryId").HasComment("寝室Id").IsRequired();
         builder.Property(student => student.Sex).HasColumnName("sex").HasComment("性别").IsRequired();
         builder.Property(student => student.Tel).HasColumnName("tel").HasMaxLength(11).IsFixedLength().HasComment("电话")
             .IsRequired();

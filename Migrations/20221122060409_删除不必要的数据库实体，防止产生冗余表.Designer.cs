@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using database;
 
@@ -11,9 +12,11 @@ using database;
 namespace database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221122060409_删除不必要的数据库实体，防止产生冗余表")]
+    partial class 删除不必要的数据库实体防止产生冗余表
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,47 +97,11 @@ namespace database.Migrations
                         .HasColumnName("name")
                         .HasComment("宿舍楼名称");
 
-                    b.Property<int?>("Sex")
-                        .IsRequired()
-                        .HasColumnType("int")
-                        .HasColumnName("sex")
-                        .HasComment("宿舍楼居住人的性别");
-
                     b.HasKey("Id");
 
                     b.ToTable("dormbuild", null, t =>
                         {
                             t.HasComment("存储宿舍楼信息");
-                        });
-                });
-
-            modelBuilder.Entity("database.Entities.Dormitory", b =>
-                {
-                    b.Property<Guid?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id")
-                        .HasComment("寝室Id，唯一");
-
-                    b.Property<Guid?>("DormBuildId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("dormBuildId")
-                        .HasComment("所属宿舍楼Id");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nchar(10)")
-                        .HasColumnName("name")
-                        .IsFixedLength()
-                        .HasComment("寝室名称");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("dormitory", null, t =>
-                        {
-                            t.HasComment("寝室管理");
                         });
                 });
 
@@ -349,6 +316,51 @@ namespace database.Migrations
                         });
                 });
 
+            modelBuilder.Entity("database.Entities.Record", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id")
+                        .HasComment("考勤Id，唯一");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("date")
+                        .HasComment("考勤日期");
+
+                    b.Property<string>("Detail")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("detail")
+                        .HasComment("详细说明");
+
+                    b.Property<Guid>("DormBuildId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("dormBuildId")
+                        .HasComment("宿舍楼Id");
+
+                    b.Property<string>("DormName")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("dormName")
+                        .HasComment("寝室号");
+
+                    b.Property<string>("StudentNumber")
+                        .HasMaxLength(10)
+                        .HasColumnType("nchar(10)")
+                        .HasColumnName("studentNumber")
+                        .IsFixedLength()
+                        .HasComment("学生学号");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("record", null, t =>
+                        {
+                            t.HasComment("用于存储考勤记录");
+                        });
+                });
+
             modelBuilder.Entity("database.Entities.Student", b =>
                 {
                     b.Property<Guid?>("Id")
@@ -357,11 +369,11 @@ namespace database.Migrations
                         .HasColumnName("id")
                         .HasComment("学生Id，唯一");
 
-                    b.Property<Guid?>("DormitoryId")
+                    b.Property<Guid?>("DormBuildId")
                         .IsRequired()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("dormitoryId")
-                        .HasComment("寝室Id");
+                        .HasColumnName("dormBuildId")
+                        .HasComment("宿舍楼Id");
 
                     b.Property<string>("Name")
                         .IsRequired()

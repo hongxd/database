@@ -6,7 +6,7 @@ public class Student
     public string? StuNum { get; set; }
     protected internal string? Password { get; set; }
     public string? Name { get; set; }
-    public Guid? DormBuildId { get; set; }
+    public Guid? DormitoryId { get; set; }
     public int? Sex { get; set; }
     public string? Tel { get; set; }
 }

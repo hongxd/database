@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using database;
 
@@ -11,9 +12,11 @@ using database;
 namespace database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221122083525_删除打卡相关数据库和增加寝室表")]
+    partial class 删除打卡相关数据库和增加寝室表
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,12 +97,6 @@ namespace database.Migrations
                         .HasColumnName("name")
                         .HasComment("宿舍楼名称");
 
-                    b.Property<int?>("Sex")
-                        .IsRequired()
-                        .HasColumnType("int")
-                        .HasColumnName("sex")
-                        .HasComment("宿舍楼居住人的性别");
-
                     b.HasKey("Id");
 
                     b.ToTable("dormbuild", null, t =>
@@ -132,7 +129,7 @@ namespace database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("dormitory", null, t =>
+                    b.ToTable("record", null, t =>
                         {
                             t.HasComment("寝室管理");
                         });
@@ -360,7 +357,7 @@ namespace database.Migrations
                     b.Property<Guid?>("DormitoryId")
                         .IsRequired()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("dormitoryId")
+                        .HasColumnName("dormBuildId")
                         .HasComment("寝室Id");
 
                     b.Property<string>("Name")

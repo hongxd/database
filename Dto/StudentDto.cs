@@ -10,5 +10,13 @@ public class StudentPaginableDto : StudentDto, IPaginable
 
 public class StudentDto : Student
 {
+    /// <summary>
+    ///     宿舍楼宇名字
+    /// </summary>
     public string? DormName { get; set; }
+
+    /// <summary>
+    ///     寝室号
+    /// </summary>
+    public string? DormitoryName { get; set; }
 }

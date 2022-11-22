@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using database.Dto;
+﻿using database.Dto;
 using database.Entities;
 using database.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +22,7 @@ public class ClockController : ControllerBase
     {
         return Ok(new ResultDto<List<Punchclock>>
         {
-            Result = _ctx.Punchclock.ToList(),
+            // Result = _ctx.Punchclock.ToList(),
         });
     }
 
@@ -31,8 +30,8 @@ public class ClockController : ControllerBase
     [Authorize(Roles = GlobalRole.Admin)]
     public async Task<ActionResult<ResultDto<string>>> Put(Punchclock clock)
     {
-        clock.PId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        await _ctx.Punchclock.AddAsync(clock);
+        // clock.PId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        // await _ctx.Punchclock.AddAsync(clock);
         await _ctx.SaveChangesAsync();
         return Ok(new ResultDto<string>
         {
@@ -48,13 +47,13 @@ public class ClockController : ControllerBase
         {
             requestBody.Ids.ForEach(id =>
             {
-                var punchclock = _ctx.Punchclock.Single(pc => pc.Id == id);
-                _ctx.Punchclock.Remove(punchclock);
+                // var punchclock = _ctx.Punchclock.Single(pc => pc.Id == id);
+                // _ctx.Punchclock.Remove(punchclock);
             });
             await _ctx.SaveChangesAsync();
             return Ok(new ResultDto<string>
             {
-                Result = "删除成功",
+                Result = "删除成功"
             });
         }
         catch

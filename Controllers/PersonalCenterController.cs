@@ -56,24 +56,6 @@ public class PersonalCenterController : ControllerBase
                     }
                 });
             }
-            case Student:
-            {
-                var p = _ctx.Student.Single(dm => dm.Id == id);
-                var d = _ctx.Dormbuild.Single(d => d.Id == p.DormBuildId);
-                return Ok(new ResultDto<PersonDto>
-                {
-                    Result = new PersonDto
-                    {
-                        Name = p.Name,
-                        Sex = p.Sex,
-                        Tel = p.Tel,
-                        Username = p.StuNum,
-                        DormBuildName = d.Name,
-                        DormBuildDetail = d.Detail,
-                        Role = Student
-                    }
-                });
-            }
             default:
                 return BadRequest("请检查是否已经登录");
         }

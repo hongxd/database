@@ -13,10 +13,12 @@ public class ApplicationDbContext : DbContext
     public DbSet<Admin> Admin { get; set; } // 连接哪个实体
     public DbSet<NoticeDb> Notice { get; set; }
     public DbSet<Dormbuild> Dormbuild { get; set; }
+
     public DbSet<Dormmanager> Dormmanager { get; set; }
-    public DbSet<Punchclock> Punchclock { get; set; }
-    public DbSet<Punchclockrecord> Punchclockrecord { get; set; }
-    public DbSet<Record> Record { get; set; }
+
+    // public DbSet<Punchclock> Punchclock { get; set; }
+    // public DbSet<Punchclockrecord> Punchclockrecord { get; set; }
+    public DbSet<Dormitory> Dormitory { get; set; }
     public DbSet<Student> Student { get; set; }
 
     // 连接哪个数据库，已经在注入的时候配置了

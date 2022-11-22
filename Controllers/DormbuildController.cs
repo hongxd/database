@@ -29,6 +29,7 @@ public class DormbuildController : ControllerBase
             { "detail", dorm.Detail }
         };
         var data = (from db in _ctx.Dormbuild
+            where dorm.Sex == db.Sex
             join dm in _ctx.Dormmanager on db.Dormmanager equals dm.Id into gj
             from subDm in gj.DefaultIfEmpty()
             select new DormbuildPaginableDto

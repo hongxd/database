@@ -2,14 +2,14 @@
 
 namespace database.Dto;
 
-public class DormbuildPaginableDto : DormbuildDto, IPaginable
+public class DormitoryPaginableDto : DormitoryDto, IPaginable
 {
     public int? Page { get; set; }
 
     public int? PageSize { get; set; }
 }
 
-public class DormbuildDto : Dormbuild
+public class DormitoryDto : Dormitory
 {
-    public string? ManagerName { get; set; }
+    // public string? ManagerName { get; set; }
 }

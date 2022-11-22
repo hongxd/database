@@ -62,7 +62,14 @@ public class Admin
             Path = "/dormBuild",
             Name = "DormBuild",
             Component = "/dormBuild/index",
-            Meta = new Meta { Title = "宿舍楼管理" }
+            Meta = new Meta { Title = "楼宇管理" }
+        },
+        new Sidebar
+        {
+            Path = "/dormitory",
+            Name = "Dormitory",
+            Component = "/dormitory/index",
+            Meta = new Meta { Title = "寝室管理" }
         },
         new Sidebar
         {
@@ -93,14 +100,18 @@ public class Admin
         },
         new Sidebar
         {
+            Path = "/punchclock",
+            Name = "Punchclock",
+            Component = "/punchclock/index",
+            Meta = new Meta { Title = "考勤管理" }
+        },
+        new Sidebar
+        {
             Path = "/personalCenter",
             Name = "PersonalCenter",
             Component = "/personalCenter/index",
             Meta = new Meta { Title = "个人中心" }
         }
         //new() { Name = "Dashboard", Meta = new Meta() { Title = "宿舍管理员管理" } },
-        //new() { Meta = new Meta() { Title = "学生管理" } },
-        //new() { Meta = new Meta() { Title = "宿舍楼管理" } },
-        //new() { Meta = new Meta() { Title = "考勤打卡管理" } },
     };
 }
