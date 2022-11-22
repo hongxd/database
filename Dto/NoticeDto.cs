@@ -12,3 +12,13 @@ public class NoticeDto : Notice
 {
     public string? NoticePerson { get; set; }
 }
+
+public readonly struct NoticeStruct
+{
+    public string? NoticePerson { get; }
+    public Guid? Id { get; }
+    public Guid? PId { get; }
+    public DateTime? Date { get; }
+    public string? Content { get; }
+    public string? Title { get; }
+}

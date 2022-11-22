@@ -24,6 +24,34 @@ public static class Query
         return data;
     }
 
+    public static string GenerateWhere(Dictionary<string, string?> dict)
+    {
+        StringBuilder str = new();
+        foreach (var (key, value) in dict)
+            if (value != null)
+                str.Append($"{key} like '%{value}%' and ");
+
+        if (str.Length > 0)
+        {
+            str.Insert(0, " where ");
+            str.Remove(str.Length - 4, 4);
+        }
+
+        return str.ToString();
+    }
+
+    public static string GeneratePaging(IPaginable p)
+    {
+        if (p.Page != null && p.PageSize != null)
+            return $"order by id offset {(p.Page - 1) * p.PageSize} rows fetch next {p.PageSize} rows only ";
+        return "";
+    }
+
+    public static string SelectCountSql(string tableName, string where)
+    {
+        return $"select count(*) as count from {tableName} {where}";
+    }
+
     /// <summary>
     ///     对字符串进行模糊匹配
     /// </summary>

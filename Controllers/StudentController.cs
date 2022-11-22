@@ -61,7 +61,7 @@ public class StudentController : ControllerBase
             case DormManager:
             {
                 // 管理员只能查看自己管理宿舍里的学生(最多管理一栋宿舍)
-                var id = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var id = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
                 var dm = _ctx.Dormmanager.Single(dm => dm.Id == id);
                 // var stus = data.Where(student => student.DormBuildId == dm.DormBuildId);
                 return Ok(new QueryResultDto<StudentPaginableDto>

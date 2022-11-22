@@ -22,32 +22,6 @@ namespace database.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("database.Dto.NoticeDto", b =>
-                {
-                    b.Property<Guid?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("NoticePerson")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("PId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NoticeDto");
-                });
-
             modelBuilder.Entity("database.Entities.Admin", b =>
                 {
                     b.Property<Guid>("Id")
