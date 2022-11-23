@@ -37,7 +37,6 @@ public class UserInfoController : ControllerBase
                         Id = id,
                         Username = admin.UserName,
                         Name = admin.Name,
-                        Password = admin.Password,
                         Token = accessToken,
                         Roles = new List<Roles> { new() { RoleName = admin.UserName, Value = Admin } }
                     }
@@ -53,7 +52,6 @@ public class UserInfoController : ControllerBase
                         Id = id,
                         Username = dm.UserName,
                         Name = dm.Name,
-                        Password = dm.Password,
                         Token = accessToken,
                         Roles = new List<Roles> { new() { RoleName = dm.UserName, Value = DormManager } }
                     }

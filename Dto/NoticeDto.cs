@@ -2,10 +2,12 @@
 
 namespace database.Dto;
 
-public class NoticePaginableDto : NoticeDto, IPaginable
+public class NoticePaginableDto : NoticeDto, IPaginable, ISortable
 {
     public int? Page { get; set; }
     public int? PageSize { get; set; }
+    public string? Field { get; set; }
+    public string? Order { get; set; }
 }
 
 public class NoticeDto : Notice

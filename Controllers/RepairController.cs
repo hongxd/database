@@ -23,23 +23,25 @@ public class RepairController : ControllerBase
         Dictionary<string, string?> dict = new()
         {
             { "thing", repair.Thing },
-            { "detail", repair.Detail }
+            { "detail", repair.Detail },
+            { "dormitoryName", repair.DormitoryName }
         };
         var q = (from rp in _ctx.Repair
-            join d in _ctx.Dormitory on rp.DormitoryId equals d.Id into gj
-            from subD in gj.DefaultIfEmpty()
-            join db in _ctx.Dormbuild on subD.DormBuildId equals db.Id into gj2
-            from subDb in gj2.DefaultIfEmpty()
-            select new RepairDto
-            {
-                Detail = rp.Detail,
-                Id = rp.Id,
-                Status = rp.Status,
-                Thing = rp.Thing,
-                ReportTime = rp.ReportTime,
-                DormitoryId = subD.Id,
-                DormitoryName = subDb.Name + "--" + subD.Name
-            }).ConfigStringQuery(dict).ConfigPaging(repair).AsNoTracking();
+                join d in _ctx.Dormitory on rp.DormitoryId equals d.Id into gj
+                from subD in gj.DefaultIfEmpty()
+                join db in _ctx.Dormbuild on subD.DormBuildId equals db.Id into gj2
+                from subDb in gj2.DefaultIfEmpty()
+                select new RepairDto
+                {
+                    Detail = rp.Detail,
+                    Id = rp.Id,
+                    Status = rp.Status,
+                    Thing = rp.Thing,
+                    ReportTime = rp.ReportTime,
+                    DormitoryId = subD.Id,
+                    DormitoryName = subDb.Name + "--" + subD.Name
+                }).ConfigStringQuery(dict).ConfigEqualSingleQuery("status", repair.Status).ConfigPaging(repair)
+            .AsNoTracking();
         return Ok(new ResultDto<QueryDto<RepairDto>>
         {
             Result = new QueryDto<RepairDto>

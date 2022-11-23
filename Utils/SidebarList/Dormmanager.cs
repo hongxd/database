@@ -6,24 +6,64 @@ public class Dormmanager
     {
         new Sidebar
         {
-            Path = "/student",
-            Name = "Student",
-            Component = "/student/index",
-            Meta = new Meta { Title = "学生管理" }
+            Path = "/dashboard",
+            Name = "Dashboard",
+            Component = "layout",
+            Redirect = "/dashboard/workbench",
+            Meta = new Meta
+            {
+                Title = "dashboard",
+                Icon = "ion:grid-outline",
+                Affix = true,
+                HideTab = true,
+                OrderNo = 10
+            },
+            Children = new List<Sidebar>
+            {
+                new()
+                {
+                    Path = "workbench",
+                    Name = "Workbench",
+                    Component = "/dashboard/workbench/index",
+                    Meta = new Meta
+                    {
+                        Title = "工作台"
+                    }
+                }
+            }
         },
         new Sidebar
         {
-            Path = "/personalCenter",
-            Name = "PersonalCenter",
-            Component = "/personalCenter/index",
-            Meta = new Meta { Title = "个人中心" }
+            Path = "/dormitory",
+            Name = "Dormitory",
+            Component = "/dormitory/index",
+            Meta = new Meta
+            {
+                Title = "寝室管理",
+                Icon = "bx:bx-home"
+            }
+        },
+        new Sidebar
+        {
+            Path = "/student",
+            Name = "Student",
+            Component = "/student/index",
+            Meta = new Meta
+            {
+                Title = "学生管理",
+                Icon = "ion:key-outline"
+            }
         },
         new Sidebar
         {
             Path = "/announcement",
             Name = "Announcement",
             Component = "/announcement/index",
-            Meta = new Meta { Title = "公告管理" }
+            Meta = new Meta
+            {
+                Title = "公告管理",
+                Icon = "ion:bar-chart-outline"
+            }
         },
         new Sidebar
         {
@@ -38,7 +78,27 @@ public class Dormmanager
                 HideTab = true
             }
         },
-        new Sidebar { Meta = new Meta { Title = "打卡记录管理" } },
-        new Sidebar { Meta = new Meta { Title = "考勤记录管理" } }
+        new Sidebar
+        {
+            Path = "/repair",
+            Name = "Repair",
+            Component = "/repair/index",
+            Meta = new Meta
+            {
+                Title = "报修管理",
+                Icon = "uil:wrench"
+            }
+        },
+        new Sidebar
+        {
+            Path = "/personalCenter",
+            Name = "PersonalCenter",
+            Component = "/personalCenter/index",
+            Meta = new Meta
+            {
+                Title = "个人中心",
+                Icon = "ion:layers-outline"
+            }
+        }
     };
 }

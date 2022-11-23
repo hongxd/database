@@ -40,11 +40,12 @@ public static class Query
         return str.ToString();
     }
 
-    public static string GeneratePaging(IPaginable p)
+    public static string GeneratePaging(IPaginable p, string orderBy = "id", string rule = "asc")
     {
         if (p.Page != null && p.PageSize != null)
-            return $"order by id offset {(p.Page - 1) * p.PageSize} rows fetch next {p.PageSize} rows only ";
-        return "";
+            return
+                $"order by {orderBy} {rule} offset {(p.Page - 1) * p.PageSize} rows fetch next {p.PageSize} rows only ";
+        return $"order by {orderBy} {rule}";
     }
 
     public static string SelectCountSql(string tableName, string where)

@@ -47,7 +47,8 @@ public class StudentController : ControllerBase
                 DormitoryId = subD.Id,
                 StuNum = s.StuNum,
                 DormitoryName = subD.Name,
-                DormName = subDb.Name
+                DormName = subDb.Name,
+                DormBuildId = subDb.Id
             }).ConfigStringQuery(dict).ConfigEqualSingleQuery("sex", stu.Sex).AsNoTracking();
 
         switch (role)
@@ -82,7 +83,6 @@ public class StudentController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize(Roles = Admin)]
     public async Task<ActionResult<ResultDto<string>>> Put(StudentPaginableDto stu)
     {
         var id = stu.DormitoryId;

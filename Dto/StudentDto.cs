@@ -19,4 +19,6 @@ public class StudentDto : Student
     ///     寝室号
     /// </summary>
     public string? DormitoryName { get; set; }
+
+    public Guid? DormBuildId { get; set; }
 }

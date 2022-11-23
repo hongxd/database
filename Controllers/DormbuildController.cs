@@ -1,6 +1,5 @@
 ﻿using database.Dto;
 using database.Utils;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +7,6 @@ namespace database.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = GlobalRole.Admin)]
 public class DormbuildController : ControllerBase
 {
     private readonly ApplicationDbContext _ctx;

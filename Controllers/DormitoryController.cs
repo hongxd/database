@@ -55,16 +55,22 @@ public class DormitoryController : ControllerBase
             if (any) return BadRequest("该楼宇已存在相同名字寝室");
             await _ctx.Dormitory.AddAsync(d);
             await _ctx.SaveChangesAsync();
-            return Ok("添加成功");
+            return Ok(new ResultDto<string>
+            {
+                Result = "添加成功"
+            });
         }
 
         var self = await _ctx.Dormitory.SingleOrDefaultAsync(dormitory => dormitory.Id == d.Id);
         if (self == null) return BadRequest("错误请求");
         if (d.Name != self.Name && any) return BadRequest("该楼宇已存在相同名字寝室");
         self.Name = d.Name;
-        self.DormBuildId = d.Id;
+        self.DormBuildId = d.DormBuildId;
         await _ctx.SaveChangesAsync();
-        return Ok("修改成功");
+        return Ok(new ResultDto<string>
+        {
+            Result = "修改成功"
+        });
     }
 
     [HttpDelete]

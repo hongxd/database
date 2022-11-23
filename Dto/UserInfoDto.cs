@@ -9,7 +9,7 @@ public class UserInfoDto
     public string? Desc { get; set; } = "manager";
     public string? Password { get; set; }
     public string? Token { get; set; }
-    public string? HomePath { get; set; } = "/dashboard/analysis";
+    public string? HomePath { get; set; } = "/dashboard";
     public List<Roles> Roles { get; init; } = new();
 }
 

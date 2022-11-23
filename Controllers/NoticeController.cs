@@ -2,6 +2,7 @@
 using Dapper;
 using database.Dto;
 using database.Entities;
+using database.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,11 +29,11 @@ public class NoticeController : ControllerBase
         {
             { "title", n.Title },
             { "noticePerson", n.NoticePerson }
-            // { "date", n.Date.ToString() }
         };
+        var order = MapSortOrder.Map(n.Order);
 
         var where = GenerateWhere(dict);
-        var paging = GeneratePaging(n);
+        var paging = GeneratePaging(n, n.Field ?? "date", order);
         var sql = @$"select Pid,title,date,noticePerson,n.id,null as content
                         from notice n
                         left join (select id, userName noticePerson
@@ -42,7 +43,7 @@ public class NoticeController : ControllerBase
                                 from dormmanager) as p
                                ON p.id = n.Pid {where} {paging}";
         Console.WriteLine(sql);
-        var selectCountSql = SelectCountSql("notice",where);
+        var selectCountSql = SelectCountSql("notice", where);
         Console.WriteLine(selectCountSql);
         var count = (await _ctx.Database.GetDbConnection().QueryAsync<int>(selectCountSql)).First();
         // 这里不传content
