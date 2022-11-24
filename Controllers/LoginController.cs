@@ -51,14 +51,13 @@ public class LoginController : ControllerBase
             // 管理员登录
             case Role.Manager:
             {
-                var sql =
-                    $"""
-                         select * from 
-                            (select "userName", password, id, 'admin' role from admin union
-                                select "userName", password, id, 'dormmanager' role from dormmanager) u
-                                    where u."userName" = '{ user.Username} ' and u.password = '{ user.Password} '
-                         """ ;
+                var sql = @"select * from (select " + "\"userName\", password, id," +
+                          $"'{Admin}' role from {Admin} union " +
+                          @"select " + "\"userName\", password, id," + @$"'{DormManager}' role from {DormManager}) u " +
+                          $"where u.\"userName\" = '{user.Username}' and u.password = '{user.Password}'";
+                Console.WriteLine(sql);
                 var u = await _context.Database.GetDbConnection().QueryFirstOrDefaultAsync<User>(sql);
+                Console.WriteLine(u);
                 if (u == null) return BadRequest("用户名或密码错误");
 
                 return Ok(new ResultDto<LoginResultDto>
