@@ -39,8 +39,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddCors(opt => { opt.AddPolicy("cors", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()); });
 
 // 配置url端口为8868，没配置默认5000
-var hostUrl = builder.Configuration.GetValue<string>("HostUrl") ?? "";
-builder.WebHost.UseUrls(hostUrl);
+// var hostUrl = builder.Configuration.GetValue<string>("HostUrl") ?? "";
+// builder.WebHost.UseUrls(hostUrl);
 
 var app = builder.Build();
 
