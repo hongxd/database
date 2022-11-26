@@ -9,11 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 依赖注入
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddMemoryCache(); // 使用缓存
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
+    // 选择使用哪个数据库。二选一
     // options.UseSqlServer(builder.Configuration.GetConnectionString(@"sqlServer"));
     options.UseNpgsql(builder.Configuration.GetConnectionString(@"npgSql"));
 });
@@ -36,6 +36,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = secKey
         };
     });
+// 粗暴配置跨域
 builder.Services.AddCors(opt => { opt.AddPolicy("cors", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()); });
 
 // 配置url端口为8868，没配置默认5000
